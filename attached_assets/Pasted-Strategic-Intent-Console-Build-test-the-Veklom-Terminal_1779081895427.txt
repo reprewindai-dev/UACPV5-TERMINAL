@@ -1,0 +1,167 @@
+Strategic Intent Console
+
+Build/test the Veklom Terminal as an internal-only operator tool for the founder/superuser account.
+
+This is NOT for normal users.
+This is NOT public.
+This is NOT the customer workspace.
+This is NOT replacing the Veklom black/orange workspace.
+
+Goal:
+Allow the logged-in owner/superuser to access and test the Veklom Terminal safely inside the app.
+
+Route:
+Add or verify one protected route:
+#/operator-terminal
+or
+#/terminal
+
+Access rule:
+Only users with owner/superuser/admin privilege can access it.
+
+If normal tenant user:
+- do not render terminal
+- show “Operator terminal is restricted”
+- return to workspace
+
+If unauthenticated:
+- redirect to login
+
+Do not expose:
+- secrets
+- API keys
+- customer data
+- private logs
+- real customer emails
+- production tokens
+- private repo paths
+- live credentials
+
+Terminal purpose:
+This is my internal operator cockpit for testing:
+- MCP/UACP command surface
+- governance monitor
+- policy evaluation
+- signal ingestion
+- agent consensus
+- memory vault
+- archives/evidence
+- marketplace/operator commands
+- vendor scout command routing
+- system telemetry
+
+Phase 1 test mode:
+- Read-only by default
+- No destructive commands
+- No outreach messages
+- No vendor contact
+- No live payments
+- No production mutations unless explicitly confirmed
+
+Command router requirements:
+Unknown commands must NOT trigger the MCP demo.
+
+Current bug:
+The terminal has been routing generic prompts into hardcoded MCP mesh output.
+
+Fix:
+- /mcp-demo is the only command that runs MCP mesh demo
+- /mcp-mesh can run MCP mesh demo
+- /mesh-test can run MCP mesh demo
+- any unknown command returns:
+  [UACP] Unknown command: <command>
+  [UACP] Type 'help' to see available commands.
+
+Vendor scout commands:
+Add:
+- /vendor-scout status
+- /vendor-scout find <query>
+- /vendor-scout leads
+- /vendor-scout export
+- /vendor-scout contact-approved
+
+Behavior:
+If vendor-scout browser agent is not connected:
+- /vendor-scout status returns:
+  [AGENT] Browser/search agent: NOT CONNECTED
+
+- /vendor-scout find <query> returns:
+  [AGENT] Vendor scout agent not connected yet.
+
+Do not fake vendor leads.
+Do not pretend to search.
+Do not contact anyone.
+Do not generate fictional companies.
+Do not send messages without founder approval.
+
+Help command:
+Add these sections:
+- System
+- MCP Demo
+- Vendor Scout
+- Governance
+- Read-only telemetry
+
+Acceptance tests:
+1. Log in as owner/superuser.
+2. Open #/operator-terminal.
+3. Terminal loads.
+4. Normal workspace routes still work.
+5. Unknown command:
+   hello world
+   Expected:
+   [UACP] Unknown command: hello world
+   Never:
+   MCP mesh topology synthesis
+   USB-C moment achieved
+
+6. /mcp-demo
+   Expected:
+   MCP mesh demo output is allowed.
+
+7. /vendor-scout status
+   Expected:
+   [AGENT] Browser/search agent: NOT CONNECTED
+   or real connected status if actually wired.
+
+8. /vendor-scout find 10 GitHub Actions security vendors
+   Expected:
+   If browser agent is not wired:
+   [AGENT] Vendor scout agent not connected yet.
+   If browser agent is wired:
+   return real lead table.
+   Never fake leads.
+
+9. Access as non-superuser:
+   Expected:
+   Restricted page.
+
+10. Check browser console:
+   Expected:
+   no fatal errors.
+
+11. Check network:
+   Expected:
+   no secrets leaked in frontend bundle or network logs.
+
+Output report:
+Create OPERATOR_TERMINAL_TEST_REPORT.md with:
+- route tested
+- logged-in user role
+- access control result
+- commands tested
+- exact outputs
+- console errors
+- network calls
+- security concerns
+- what works
+- what is not connected yet
+- next fixes
+
+Model Routing
+openai
+Dispatch
+Execution Ready: Multi-provider safety gateway verified.
+
+Latency Target
+< 450ms

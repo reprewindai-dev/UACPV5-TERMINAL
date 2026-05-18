@@ -7,6 +7,7 @@ import { GenomeDNA } from './components/GenomeDNA';
 import { LineageLedger } from './components/LineageLedger';
 import { StatePropagationAtlas } from './components/StatePropagationAtlas';
 import { ROIPanel } from './components/ROIPanel';
+import { MCPStatusIndicator } from './components/MCPStatusIndicator';
 
 // New imports
 import { BoundedScaling } from './components/BoundedScaling';
@@ -28,6 +29,7 @@ import { ProbabilityMatrix } from './components/ProbabilityMatrix';
 import { RegionalEmittersPanel } from './components/RegionalEmittersPanel';
 import { SignalIngestionFeed } from './components/SignalIngestionFeed';
 import { ThreatLandscape } from './components/ThreatLandscape';
+import { LLMProvider, ProviderConfig } from './types';
 
 // Type definitions to help manage the state
 type ViewType = 'terminal' | 'mesh' | 'tele' | 'paths' | 'engine' | 'hub' | 'climate' | 'security';
@@ -128,6 +130,14 @@ function ZenoCanvas({ zenoOn, zenoLabel }: { zenoOn: boolean; zenoLabel: string 
   );
 }
 
+const PROVIDERS: ProviderConfig[] = [
+  { id: 'google', name: 'Google Gemini', enabled: true },
+  { id: 'openai', name: 'OpenAI GPT-4o', enabled: true },
+  { id: 'anthropic', name: 'Anthropic Claude', enabled: true },
+  { id: 'groq', name: 'Groq LPU', enabled: true },
+  { id: 'deepseek', name: 'DeepSeek', enabled: true },
+];
+
 export default function App() {
   const [activeView, setActiveView] = useState<ViewType>('terminal');
   const [inputVal, setInputVal] = useState('');
@@ -142,6 +152,11 @@ export default function App() {
       status: 'idle' as 'idle' | 'assigned' | 'executing' | 'blocked'
     }))
   );
+
+  // Hub / Strategic Intent Console state
+  const [hubProvider, setHubProvider] = useState<LLMProvider>('google');
+  const [hubOutput, setHubOutput] = useState<any>(null);
+  const [hubLoading, setHubLoading] = useState(false);
   
   const [tele, setTele] = useState<TelemetryState>({
     zenoCycles: 0,
@@ -247,13 +262,19 @@ export default function App() {
       await sleep(650);
       setIsTyping(false);
       
-      const lo = raw.toLowerCase();
-      if (lo.includes('bitmap') || lo.includes('transmiss')) await doBitmap();
-      else if (lo.includes('heron') || lo.includes('qubit') || lo.includes('calibrat')) await doQuantum();
-      else if (lo.includes('co2')) await doCO2();
-      else if (lo.includes('zeno') || lo.includes('interrogat')) await doZeno();
-      else if (lo.includes('mcp') || lo.includes('mesh') || lo.includes('topolog')) await doMCP();
-      else await doGeneric(raw);
+      // Slash commands take priority over everything
+      if (raw.startsWith('/')) {
+        await handleSlashCommand(raw);
+      } else {
+        // Natural language chip prompts — keyword matched demos
+        const lo = raw.toLowerCase();
+        if (lo.includes('bitmap') || lo.includes('transmiss')) await doBitmap();
+        else if (lo.includes('heron') || lo.includes('qubit') || lo.includes('calibrat')) await doQuantum();
+        else if (lo.includes('co2')) await doCO2();
+        else if (lo.includes('zeno') || lo.includes('interrogat')) await doZeno();
+        else if (lo.includes('mcp') || lo.includes('mesh') || lo.includes('topolog')) await doMCP();
+        else await doUnknown(raw);
+      }
     } finally {
       clearInterval(aInterval);
       setAgentTaskForce(p => p.map(a => ({ ...a, status: 'idle' })));
@@ -341,20 +362,122 @@ export default function App() {
     await sleep(150); pushLog('[OK]      USB-C moment achieved.', 'ok');
   };
 
-  const doGeneric = async (raw: string) => {
-    const trunc = raw.length > 40 ? raw.slice(0, 40) + '…' : raw;
-    pushLog(`[ENGINE]  Parsing: "${trunc}"`, 'sys');
-    await sleep(250); pushLog('[MCP]     Routing to best-fit server…', 'sys');
-    pushLog('', 'custom', { isMesh: true, meshLbl: 'tools/invoke' });
-    await sleep(380); pushLog('[ZENO]    84-cycle scan', 'pur');
-    updateTele(84, 0);
-    await sleep(180); pushLog('[GLADIATOR]  Generating paths:', 'sys');
-    pushLog('', 'custom', { isSpec: true, specPaths: [{l:'Direct exec',v:78+Math.floor(Math.random()*14),locked:true},{l:'Context-aug',v:55+Math.floor(Math.random()*20),locked:true},{l:'Chain-of-th',v:40+Math.floor(Math.random()*18)},{l:'Hallucinated',v:11,pruned:true}] });
-    await sleep(1150); pushLog('', 'out');
-    await sleep(100); pushLog('[RESULT]  Orchestration plan synthesized', 'ok');
-    await sleep(150); pushLog('          Confidence: HIGH  ·  MCP calls: 3', 'out');
-    updateTele(0, 1); addEvent('g', '<b>Engine</b> — Generic orchestration complete');
-    await sleep(180); pushLog('[OK]      Cognitive Engine standing by.', 'ok');
+  const doUnknown = async (raw: string) => {
+    const trunc = raw.length > 60 ? raw.slice(0, 60) + '…' : raw;
+    await sleep(100);
+    pushLog(`[UACP]    Unknown command: ${trunc}`, 'warn');
+    pushLog('[UACP]    Type \'help\' or \'/help\' to see available commands.', 'dim');
+  };
+
+  const doVendorScout = async (args: string) => {
+    const sub = args.trim().toLowerCase();
+    if (!sub || sub === 'status') {
+      pushLog('[AGENT]   Vendor Scout module: checking connection…', 'sys');
+      await sleep(300);
+      pushLog('[AGENT]   Browser/search agent: NOT CONNECTED', 'warn');
+      pushLog('[AGENT]   To enable: wire the browser agent and restart the orchestration plane.', 'dim');
+    } else if (sub.startsWith('find')) {
+      const query = args.replace(/^find\s*/i, '').trim();
+      pushLog(`[AGENT]   Vendor scout find: "${query || '(no query)'}"`, 'sys');
+      await sleep(300);
+      pushLog('[AGENT]   Vendor scout agent not connected yet.', 'warn');
+      pushLog('[AGENT]   No fake leads will be generated. Connect the browser agent first.', 'dim');
+    } else if (sub === 'leads') {
+      pushLog('[AGENT]   Vendor lead cache: EMPTY', 'warn');
+      pushLog('[AGENT]   No leads available. Browser agent not connected.', 'dim');
+    } else if (sub === 'export') {
+      pushLog('[AGENT]   Export: no data to export. Run /vendor-scout find <query> first.', 'warn');
+    } else if (sub === 'contact-approved') {
+      pushLog('[AGENT]   Contact-approved list: EMPTY', 'warn');
+      pushLog('[AGENT]   No approved contacts. Founder approval required before any outreach.', 'dim');
+    } else {
+      pushLog(`[AGENT]   Unknown vendor-scout subcommand: ${sub}`, 'warn');
+      pushLog('[AGENT]   Usage: /vendor-scout status | find <query> | leads | export | contact-approved', 'dim');
+    }
+  };
+
+  const doHelp = async () => {
+    await sleep(80);
+    pushLog('━━━━ UACP OPERATOR TERMINAL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'hdr');
+    pushLog('', 'out');
+    pushLog('  SYSTEM', 'sep');
+    pushLog('  /help                    Show this help', 'out');
+    pushLog('  /clear                   Clear terminal output', 'out');
+    pushLog('', 'out');
+    pushLog('  MCP DEMO', 'sep');
+    pushLog('  /mcp-demo                Run MCP mesh topology demo', 'out');
+    pushLog('  /mcp-mesh                Alias for /mcp-demo', 'out');
+    pushLog('  /mesh-test               Run mesh connectivity test', 'out');
+    pushLog('', 'out');
+    pushLog('  VENDOR SCOUT', 'sep');
+    pushLog('  /vendor-scout status     Check browser/search agent status', 'out');
+    pushLog('  /vendor-scout find <q>   Search for vendors (requires agent)', 'out');
+    pushLog('  /vendor-scout leads      Show cached lead list', 'out');
+    pushLog('  /vendor-scout export     Export lead data', 'out');
+    pushLog('  /vendor-scout contact-approved  List approved contacts', 'out');
+    pushLog('', 'out');
+    pushLog('  GOVERNANCE', 'sep');
+    pushLog('  Hub tab → Strategic Intent Console → dispatch an intent', 'out');
+    pushLog('  Governance tab → policy evaluation and compliance horizon', 'out');
+    pushLog('', 'out');
+    pushLog('  TELEMETRY (READ-ONLY)', 'sep');
+    pushLog('  Telemetry tab → live signal feed and KPI dashboard', 'out');
+    pushLog('  MCP tab → mesh topology and server health', 'out');
+    pushLog('', 'out');
+    pushLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'dim');
+  };
+
+  const handleSlashCommand = async (raw: string) => {
+    const parts = raw.slice(1).trim().split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const rest = parts.slice(1).join(' ');
+
+    if (cmd === 'help') {
+      await doHelp();
+    } else if (cmd === 'clear') {
+      setLogs([]);
+      pushLog('[UACP]    Terminal cleared.', 'dim');
+    } else if (cmd === 'mcp-demo' || cmd === 'mcp-mesh' || cmd === 'mesh-test') {
+      await doMCP();
+    } else if (cmd === 'vendor-scout') {
+      await doVendorScout(rest);
+    } else {
+      pushLog(`[UACP]    Unknown command: /${cmd}`, 'warn');
+      pushLog('[UACP]    Type \'/help\' to see available commands.', 'dim');
+    }
+  };
+
+  const handleHubExecute = async (intent: string) => {
+    if (!intent.trim()) return;
+    setHubLoading(true);
+    setHubOutput(null);
+    try {
+      const res = await fetch('/api/cognitive/orchestrate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-role': 'operator',
+          'x-agent-confidence': '1.0',
+          'x-user-credits': '9999',
+        },
+        body: JSON.stringify({
+          prompt: intent,
+          context: {
+            source: 'operator_terminal',
+            view: 'hub',
+            timestamp: new Date().toISOString(),
+          },
+          provider: hubProvider,
+          model: hubProvider === 'google' ? 'gemini-2.0-flash-exp' : undefined,
+        }),
+      });
+      const data = await res.json();
+      setHubOutput(data);
+    } catch (err: any) {
+      setHubOutput({ error: true, message: err.message || 'Network error — check server logs.' });
+    } finally {
+      setHubLoading(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -380,7 +503,10 @@ export default function App() {
             <div className="dots"><div className="dot r"></div><div className="dot a"></div><div className="dot g"></div></div>
             <div className="tb-title"><b>VEKLOM TERMINAL</b> · UACP v4.0</div>
           </div>
-          <div className="tb-stat"><div className="live-dot"></div>LIVE</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <MCPStatusIndicator />
+            <div className="tb-stat"><div className="live-dot"></div>LIVE</div>
+          </div>
         </div>
       </div>
 
@@ -720,7 +846,35 @@ export default function App() {
           <div className="tele-view">
              <div className="section-hdr">Strategic Orchestration Hub</div>
              <div className="flex flex-col gap-4 mt-4">
-                <IntentConsole onExecute={() => {}} isLocked={false} selectedProvider="openai" onProviderChange={() => {}} providers={[]} />
+                <IntentConsole
+                  onExecute={handleHubExecute}
+                  isLocked={hubLoading}
+                  selectedProvider={hubProvider}
+                  onProviderChange={(p) => setHubProvider(p)}
+                  providers={PROVIDERS}
+                />
+                {hubLoading && (
+                  <div className="hub-loading">
+                    <div className="td" /><div className="td" /><div className="td" />
+                    <span>Dispatching intent to {hubProvider} via UACP orchestration plane…</span>
+                  </div>
+                )}
+                {hubOutput && !hubLoading && (
+                  <div className="hub-output">
+                    <div className="hub-output-hdr">
+                      <span>Orchestration Response</span>
+                      <span style={{ color: hubOutput.error ? 'var(--red,#f87171)' : 'var(--green)' }}>
+                        {hubOutput.error ? '✗ ERROR' : '✓ COMPLETE'}
+                      </span>
+                    </div>
+                    {hubOutput.error
+                      ? <span style={{ color: 'var(--red,#f87171)' }}>{hubOutput.message}</span>
+                      : hubOutput.result
+                        ? <span>{typeof hubOutput.result === 'string' ? hubOutput.result : JSON.stringify(hubOutput.result, null, 2)}</span>
+                        : <pre>{JSON.stringify(hubOutput, null, 2)}</pre>
+                    }
+                  </div>
+                )}
                 <SignalIngestionFeed signals={[]} />
                 <ProbabilityMatrix revision="1.0.4" isCompiled={false} />
                 <AgentConsensusMatrix activeNodes={10} consensusModel="Gemini Pro Integrated" />

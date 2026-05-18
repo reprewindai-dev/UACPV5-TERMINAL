@@ -35,12 +35,60 @@ async function startServer() {
     { capabilities: { tools: {}, resources: {} } } as any
   );
 
-  try {
-    await mcpClient.connect(transport);
-    console.log("Connected to MCP Server: quantum-uacp-server");
-  } catch (err) {
-    console.error("Failed to connect to MCP Server", err);
-  }
+  const mcpStatus = {
+    connected: false,
+    reconnecting: false,
+    reconnectAttempts: 0,
+    lastConnected: null as string | null,
+    startTime: Date.now(),
+  };
+
+  const connectMCP = async () => {
+    try {
+      await mcpClient.connect(transport);
+      mcpStatus.connected = true;
+      mcpStatus.lastConnected = new Date().toISOString();
+      mcpStatus.reconnectAttempts = 0;
+      console.log("Connected to MCP Server: quantum-uacp-server");
+    } catch (err) {
+      mcpStatus.connected = false;
+      console.error("Failed to connect to MCP Server", err);
+    }
+  };
+
+  await connectMCP();
+
+  // Periodic health check — ping MCP every 30s and reconnect if dead
+  setInterval(async () => {
+    if (mcpStatus.reconnecting) return;
+    try {
+      await mcpClient.listTools();
+      if (!mcpStatus.connected) {
+        mcpStatus.connected = true;
+        mcpStatus.lastConnected = new Date().toISOString();
+        console.log("MCP Server reconnected.");
+      }
+    } catch {
+      if (mcpStatus.connected) {
+        mcpStatus.connected = false;
+        console.warn("MCP Server health check failed — marking disconnected.");
+      }
+      mcpStatus.reconnecting = true;
+      mcpStatus.reconnectAttempts++;
+      console.log(`MCP reconnect attempt #${mcpStatus.reconnectAttempts}...`);
+      try {
+        const newTransport = new StdioClientTransport({ command, args: [mcpPath] });
+        await mcpClient.connect(newTransport);
+        mcpStatus.connected = true;
+        mcpStatus.lastConnected = new Date().toISOString();
+        console.log("MCP Server reconnected successfully.");
+      } catch (reconnErr) {
+        console.error("MCP reconnect failed:", reconnErr);
+      } finally {
+        mcpStatus.reconnecting = false;
+      }
+    }
+  }, 30000);
 
   // Lazy initialization helpers
   let _aiClient: GoogleGenAI | null = null;
@@ -101,6 +149,16 @@ async function startServer() {
       spectral_density: "stable"
     }
   };
+
+  app.get("/api/mcp/status", (req, res) => {
+    res.json({
+      connected: mcpStatus.connected,
+      reconnecting: mcpStatus.reconnecting,
+      reconnectAttempts: mcpStatus.reconnectAttempts,
+      lastConnected: mcpStatus.lastConnected,
+      uptime: Math.floor((Date.now() - mcpStatus.startTime) / 1000),
+    });
+  });
 
   app.get("/api/status", (req, res) => {
     res.json({
