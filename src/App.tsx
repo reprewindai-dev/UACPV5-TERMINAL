@@ -509,7 +509,6 @@ export default function App() {
         </div>
       </div>
 
-      <ZenoCanvas zenoOn={zenoState.on} zenoLabel={zenoState.lbl} />
 
       {/* VIEWS */}
       <div className="views">
