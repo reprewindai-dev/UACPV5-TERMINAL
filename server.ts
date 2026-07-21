@@ -511,6 +511,40 @@ async function startServer() {
     res.json({ status: "ok", message: "Wavefunction reset initiated." });
   });
 
+  // SSE stream for agent status updates (Control Plane / SwarmMap)
+  app.get("/api/agent-updates", (req, res) => {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders();
+
+    const statuses = ["Active", "Idle", "Blocked"] as const;
+    const depts = ["Engineering", "Growth", "Ops", "Research", "Revenue"] as const;
+
+    const send = () => {
+      const agentIdx = Math.floor(Math.random() * 105);
+      const agentId = agentIdx === 0 ? "AG-CORE-000" : `AG-${depts[agentIdx % 5].slice(0, 3).toUpperCase()}-${String(agentIdx).padStart(3, "0")}`;
+      const payload = {
+        id: agentId,
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        metrics: {
+          cpu: Math.floor(Math.random() * 100),
+          memory: Math.floor(Math.random() * 100),
+          latency: Math.floor(Math.random() * 50) + 1,
+          requestCount: Math.floor(Math.random() * 20000),
+        },
+        timestamp: new Date().toISOString(),
+      };
+      res.write(`data: ${JSON.stringify(payload)}\n\n`);
+    };
+
+    // Send connection ack
+    res.write(`data: ${JSON.stringify({ type: "connection", message: "UACP Swarm SSE connected." })}\n\n`);
+
+    const interval = setInterval(send, 2000);
+    req.on("close", () => { clearInterval(interval); res.end(); });
+  });
+
   app.post("/api/system/stress-test", (req, res) => {
     res.json({ 
       status: "ok", 

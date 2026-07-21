@@ -29,10 +29,20 @@ import { ProbabilityMatrix } from './components/ProbabilityMatrix';
 import { RegionalEmittersPanel } from './components/RegionalEmittersPanel';
 import { SignalIngestionFeed } from './components/SignalIngestionFeed';
 import { ThreatLandscape } from './components/ThreatLandscape';
-import { LLMProvider, ProviderConfig } from './types';
+import { LLMProvider, ProviderConfig, AgentNode, VeklomRun, Delegate, TelemetryTick } from './types';
+
+// RealTerminal imports
+import SwarmMap from './components/SwarmMap';
+import RunSpine from './components/RunSpine';
+import CouncilMatrix from './components/CouncilMatrix';
+import DataGrid from './components/DataGrid';
+import LiveTelemetry from './components/LiveTelemetry';
+import AmbientIntervention from './components/AmbientIntervention';
+import CPSidebar from './components/Sidebar';
+import { controlStore } from './data/simulation';
 
 // Type definitions to help manage the state
-type ViewType = 'terminal' | 'mesh' | 'tele' | 'paths' | 'engine' | 'hub' | 'climate' | 'security';
+type ViewType = 'terminal' | 'mesh' | 'tele' | 'paths' | 'engine' | 'hub' | 'climate' | 'security' | 'dashboard';
 type LogType = 'sys' | 'pmt' | 'out' | 'ok' | 'warn' | 'err' | 'dim' | 'pur' | 'hdr' | 'sep' | 'custom';
 
 interface SpecPath {
@@ -170,6 +180,50 @@ export default function App() {
 
   const [evTimeOffset, setEvTimeOffset] = useState(2);
   const outRef = useRef<HTMLDivElement>(null);
+
+  // ── RealTerminal / Control Plane state ───────────────────────────────────
+  const [cpAgents, setCpAgents] = useState<AgentNode[]>([]);
+  const [cpRuns, setCpRuns] = useState<VeklomRun[]>([]);
+  const [cpDelegates, setCpDelegates] = useState<Delegate[]>([]);
+  const [cpLogs, setCpLogs] = useState<TelemetryTick[]>([]);
+  const [cpMetrics, setCpMetrics] = useState(controlStore.liveMetrics);
+  const [cpSelectedRun, setCpSelectedRun] = useState<string | null>(null);
+  const [cpTab, setCpTab] = useState<string>('overview');
+
+  useEffect(() => {
+    setCpAgents([...controlStore.agents]);
+    setCpRuns([...controlStore.runs]);
+    setCpDelegates([...controlStore.delegates]);
+    setCpLogs([...controlStore.logs]);
+    setCpMetrics({ ...controlStore.liveMetrics });
+    const unsub = controlStore.subscribe(() => {
+      setCpAgents([...controlStore.agents]);
+      setCpRuns([...controlStore.runs]);
+      setCpDelegates([...controlStore.delegates]);
+      setCpLogs([...controlStore.logs]);
+      setCpMetrics({ ...controlStore.liveMetrics });
+    });
+    return () => unsub();
+  }, []);
+
+  const handleCpAgentUpdate = (id: string, fields: Partial<AgentNode>) => {
+    controlStore.agents = controlStore.agents.map(a => a.id === id ? { ...a, ...fields } : a);
+    setCpAgents([...controlStore.agents]);
+  };
+
+  const handleCpVotePropose = (proposal: string) => {
+    controlStore.delegates = controlStore.delegates.map(d => {
+      const opts: ('yea' | 'nay' | 'abstain' | 'pending')[] = ['yea', 'yea', 'yea', 'nay', 'abstain'];
+      return { ...d, vote: opts[Math.floor(Math.random() * opts.length)], weight: Math.floor(Math.random() * 15) + 10 };
+    });
+    controlStore.logs.unshift({ timestamp: new Date().toISOString(), source: 'Council', message: `LEGISLATURE: Motion initiated — ${proposal}`, type: 'warn' });
+  };
+
+  const handleCpManualOverride = (intent: string, policy: string) => {
+    const run = controlStore.triggerManualRun(intent, policy);
+    setCpSelectedRun(run.id);
+    setCpTab('spine');
+  };
 
   // Auto-scroll
   useEffect(() => {
@@ -892,6 +946,83 @@ export default function App() {
           </div>
         </div>
 
+        {/* Dashboard / Control Plane View */}
+        {activeView === 'dashboard' && (
+          <div className="cp-dashboard" style={{ position: 'absolute', inset: 0 }}>
+            <AmbientIntervention />
+            {/* Header */}
+            <header style={{ height: 48, borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', flexShrink: 0, userSelect: 'none' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 12, height: 12, background: '#00E5FF', boxShadow: '0 0 8px #00E5FF' }} />
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>UACP V5 Control Plane</span>
+                </div>
+                <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.2)' }} />
+                <div style={{ display: 'flex', gap: 16, fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>
+                  <span>NODE_ID: US-EAST-B82</span>
+                  <span>LATENCY: 4MS</span>
+                  <span style={{ color: '#00FF66' }}>OS_HEALTH: 100%</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontFamily: 'JetBrains Mono, monospace', fontSize: 10 }}>
+                <span style={{ color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em' }}>ARBITER OS STATUS</span>
+                <span style={{ color: '#00FF66', fontWeight: 700, letterSpacing: '0.15em' }}>ENFORCING / MODE_01</span>
+              </div>
+            </header>
+
+            {/* Body */}
+            <div className="cp-body">
+              {/* Sidebar */}
+              <CPSidebar
+                activeTab={cpTab}
+                setActiveTab={setCpTab}
+                mcpHeartbeat="NORMAL"
+                throughput={cpMetrics.throughput}
+                agentsCount={cpAgents.length}
+              />
+
+              {/* Main content */}
+              <div className="cp-main">
+                <div className="cp-content">
+                  {cpTab === 'overview' && (
+                    <SwarmMap agents={cpAgents} onAgentUpdate={handleCpAgentUpdate} />
+                  )}
+                  {cpTab === 'spine' && (
+                    <RunSpine runs={cpRuns} selectedRunId={cpSelectedRun} onSelectRun={setCpSelectedRun} />
+                  )}
+                  {cpTab === 'runs' && (
+                    <DataGrid runs={cpRuns} />
+                  )}
+                  {cpTab === 'committee' && (
+                    <CouncilMatrix delegates={cpDelegates} onVotePropose={handleCpVotePropose} />
+                  )}
+                </div>
+
+                {/* Live Telemetry bar */}
+                <div className="cp-telemetry">
+                  <LiveTelemetry
+                    logs={cpLogs}
+                    metrics={cpMetrics}
+                    onTriggerManualOverride={handleCpManualOverride}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <footer style={{ height: 24, borderTop: '1px solid rgba(255,255,255,0.1)', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'rgba(255,255,255,0.3)', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: 16 }}>
+                <span>ENCRYPT: TLS_1.3_CHACHA20_POLY1305</span>
+                <span>SESSION: B82-ALPHA-77</span>
+              </div>
+              <div style={{ display: 'flex', gap: 16 }}>
+                <span style={{ color: '#00FF66' }}>● UACP_CORE_UP</span>
+                <span style={{ color: '#00E5FF' }}>● MCP_BUS_CONNECTED</span>
+              </div>
+            </footer>
+          </div>
+        )}
+
       </div>
 
       {/* Bottom Nav */}
@@ -926,6 +1057,11 @@ export default function App() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
              <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
           </svg>Hub
+        </div>
+        <div className={`bt ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveView('dashboard')}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+          </svg>Control Plane
         </div>
       </div>
     </div>
