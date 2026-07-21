@@ -1,0 +1,19 @@
+Re-checked current infra state before answering, since this needs to be accurate after the port mess we just untangled.
+
+The short version: right now the operator terminal is self-contained — /api/mcp/status and /api/cognitive/orchestrate are routes on its own server.ts, not calls out to your real backends. "Connecting to all my backend" means turning those into real proxies. Same underlying pattern for every one of them:
+
+1
+Get a stable public URL per backend
+Replit (and wherever this frontend ends up) can't reach a bare IP:port on your Hetzner box directly — it has to go through Traefik over HTTPS. Confirm a subdomain per service in Coolify (e.g. api.veklom.com → veklom-byos-backend, cappo.veklom.com → cappo-backend), using the port cleanup from a few minutes ago as the source of truth for which container each domain actually points to.
+2
+Turn hardcoded/local URLs into environment variables
+Each stub handler in server.ts needs a real backend base URL behind it — VEKLOM_BACKEND_URL, CAPPO_BACKEND_URL, GNOMLEDGER_URL. Set these in Replit's Secrets panel now, and in whatever actually hosts this in production later.
+3
+Allow the terminal's origin in each backend's CORS config
+FastAPI's CORSMiddleware (and the Next.js equivalent for interlink-cAPI) needs the Replit preview domain — and later the terminal's real domain — explicitly allow-listed, or every real backend call gets blocked the same way the Vite dev server just was, for a different but related reason.
+4
+Keep credentials server-side only
+The "operator bypass headers" already used for cognitive-orchestrate is the right pattern — the browser never holds an API key or token; the terminal's own server.ts attaches it before forwarding. Extend that same pattern to vendor-scout and MCP mesh rather than inventing a new auth path per feature.
+5
+Replace one stub at a time, verified not simulated
+vendor-scout is honestly returning "NOT CONNECTED" stubs right now — that's the right state to be in. Wire it to the real backend, verify that specific call actually round-trips, then flip the label. Same for MCP mesh's live data. Don't flip several stubs to "connected" in one commit without testing each — that's how a fake status badge happens by accident.
