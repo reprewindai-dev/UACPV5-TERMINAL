@@ -36,3 +36,10 @@ externalPort = 3000
 [[ports]]
 localPort = 24678
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+CAPPO_BACKEND_URL = "https://cappo.veklom.com"
+GNOMLEDGER_URL = "https://gnomledger.veklom.com"
+VEKLOM_BACKEND_URL = "https://api.veklom.com"

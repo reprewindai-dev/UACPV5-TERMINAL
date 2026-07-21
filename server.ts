@@ -135,307 +135,145 @@ async function startServer() {
   const getGroq = (apiKey?: string) => getOpenAI(apiKey || process.env.GROQ_API_KEY, "https://api.groq.com/openai/v1");
   const getDeepSeek = (apiKey?: string) => getOpenAI(apiKey || process.env.DEEPSEEK_API_KEY, "https://api.deepseek.com");
 
-  // BYOS AI Backend Stubs
-  const BYOS_STATE = {
-    status: "healthy",
-    llm_ok: true,
-    circuit_breaker: { state: "CLOSED", failures: 0 },
-    budget: { monthly: 100.00, current: 34.21 },
-    security: { score: 94, events_open: 3 },
-    privacy: { pii_protection: "active" },
-    vibration_profile: {
-      fft_mode: "harmonic_search",
-      iso_standard: "10816",
-      spectral_density: "stable"
+  // ── Real Backend Proxy ──────────────────────────────────────────────────────
+  // All requests are forwarded server-side; no credentials ever reach the browser.
+
+  const upstream = async (
+    backendUrl: string | undefined,
+    envVarName: string,
+    path: string,
+    method: string,
+    body: unknown,
+    res: express.Response
+  ) => {
+    if (!backendUrl) {
+      return res.status(503).json({
+        error: "NOT_CONNECTED",
+        message: `Backend not configured. Set ${envVarName} in Replit Secrets.`,
+        hint: `Expected env var: ${envVarName}`
+      });
     }
-  };
+    try {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      const apiKey = process.env.OPERATOR_INTERNAL_API_KEY;
+      if (apiKey) headers["X-API-Key"] = apiKey;
 
-  app.get("/api/mcp/status", (req, res) => {
-    res.json({
-      connected: mcpStatus.connected,
-      reconnecting: mcpStatus.reconnecting,
-      reconnectAttempts: mcpStatus.reconnectAttempts,
-      lastConnected: mcpStatus.lastConnected,
-      uptime: Math.floor((Date.now() - mcpStatus.startTime) / 1000),
-    });
-  });
-
-  app.get("/api/status", (req, res) => {
-    res.json({
-      ...BYOS_STATE,
-      llm_model: "Olmo3-Hybrid (State-Propagated)",
-      uptime_seconds: Math.floor(process.uptime())
-    });
-  });
-
-  app.get("/api/v1/monitoring/health", (req, res) => {
-    res.json({
-      status: "healthy",
-      score: 98,
-      components: {
-        database: { status: "healthy", latency: "2ms" },
-        redis: { status: "healthy", latency: "1ms" },
-        ollama: { status: "healthy", latency: "45ms" }
+      const fetchRes = await fetch(`${backendUrl}${path}`, {
+        method,
+        headers,
+        body: method !== "GET" && method !== "HEAD" ? JSON.stringify(body) : undefined,
+      });
+      let data: any;
+      const ct = fetchRes.headers.get("content-type") || "";
+      if (ct.includes("application/json")) {
+        data = await fetchRes.json();
+      } else {
+        data = { raw: await fetchRes.text() };
       }
-    });
-  });
-
-  app.get("/api/v1/security/stats", (req, res) => {
-    res.json(BYOS_STATE.security);
-  });
-
-  app.post("/api/v1/privacy/detect-pii", (req, res) => {
-    const { text } = req.body;
-    const hasPII = /[\w\.-]+@[\w\.-]+\.\w+/.test(text || ""); // Simple email regex stub
-    res.json({ has_pii: hasPII, types: hasPII ? ["email"] : [] });
-  });
-
-  app.post("/v1/exec", async (req, res) => {
-    const { prompt, model } = req.body;
-    // Mocking an AI response for the BYOS Engine
-    res.json({
-      response: `[BYOS ${model || "qwen2.5:3b"}] Processed: ${prompt?.substring(0, 50)}...`,
-      provider: "ollama",
-      model: model || "qwen2.5:3b",
-      latency_ms: 1200,
-      log_id: `exec_${Math.random().toString(36).substring(7)}`
-    });
-  });
-
-  app.post("/api/v1/auth/register", (req, res) => {
-    res.json({ access_token: "mock_jwt_token", workspace_id: "work_123" });
-  });
-
-  app.post("/api/v1/cost/predict", (req, res) => {
-    res.json({ predicted_cost: "0.00124", alternatives: [{ provider: "ollama", cost: "0.0" }] });
-  });
-
-  app.post("/api/v1/content-safety/scan", (req, res) => {
-    res.json({ allowed: true, category: "safe", confidence: 0.99 });
-  });
-
-  app.get("/api/climate/emissions", (req, res) => {
-    res.json([
-        { year: 1990, value: 22.4, label: "Baseline" },
-        { year: 2000, value: 25.2 },
-        { year: 2010, value: 33.1 },
-        { year: 2020, value: 34.8, label: "Pandemic Dip" },
-        { year: 2024, value: 37.8, label: "Record High" },
-        { year: 2025, value: 38.1, label: "Projected" }
-    ]);
-  });
-
-  app.get("/api/climate/regional", (req, res) => {
-    res.json([
-        { name: "China", volume: 16000, percentage: 30, perCapita: 11.3 },
-        { name: "USA", volume: 5970, percentage: 11, perCapita: 18.0 },
-        { name: "India", volume: 4140, percentage: 8, perCapita: 2.9 },
-        { name: "EU-27", volume: 3230, percentage: 6, perCapita: 7.2 },
-        { name: "Russia", volume: 2660, percentage: 5, perCapita: 18.3 },
-        { name: "Brazil", volume: 1300, percentage: 2, perCapita: 6.1 }
-    ]);
-  });
-
-  // PGL Framework: Project Genome Ledger
-  const generateGenomeHash = (layers: any) => {
-    const seed = JSON.stringify(layers);
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-        const char = seed.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
+      res.status(fetchRes.status).json(data);
+    } catch (err: any) {
+      res.status(502).json({ error: "UPSTREAM_ERROR", message: err.message, backend: backendUrl });
     }
-    return Math.abs(hash).toString(16).padStart(8, '0');
   };
 
-  const CURRENT_GENOME_LAYERS = {
-    model: "Olmo3-Hybrid-v3.1",
-    prompt: "PGL-Constitutional-v1",
-    policy: "Article-12-Compliant",
-    watchtower: "Active-MELT-Guard",
-    task_profile: "Industrial-Predictive-Main"
-  };
+  const CAPPO  = () => process.env.CAPPO_BACKEND_URL;
+  const VEKLOM = () => process.env.VEKLOM_BACKEND_URL;
+  const GNOMLEDGER = () => process.env.GNOMLEDGER_URL;
 
-  const GENOME_HASH = generateGenomeHash(CURRENT_GENOME_LAYERS);
-
-  app.get("/api/pgl/genome", (req, res) => {
-    res.json({
-        hash: GENOME_HASH,
-        layers: CURRENT_GENOME_LAYERS,
-        timestamp: new Date().toISOString()
-    });
-  });
-
-  app.get("/api/pgl/ledger", (req, res) => {
-    res.json([
-        { id: "g-001", type: "genome", label: "Root Genome", relation: "DERIVED_FROM" },
-        { id: "g-v2", type: "genome", label: "Hybrid Expansion", parentId: "g-001", relation: "DERIVED_FROM" },
-        { id: `g-${GENOME_HASH.substring(0, 4)}`, type: "genome", label: `Current DNA (${GENOME_HASH.substring(0, 8)})`, parentId: "g-v2", relation: "DERIVED_FROM" },
-        { id: "out-442", type: "output", label: "Inference-Trace-442", parentId: `g-${GENOME_HASH.substring(0, 4)}`, relation: "PRODUCED_BY" }
-    ]);
-  });
-
-  app.get("/api/seked/status", (req, res) => {
-    const e = Math.random();
-    const r = Math.random();
-    const c = Math.random();
-    const d = Math.random();
-    const s = Math.random();
-    
-    // Deterministic Logic: Map multi-dimensional space to 9 directives
-    const calculateSekedDirective = (e: number, r: number, c: number, d: number, s: number): string => {
-        // Treat each parameter as having 10 discrete levels (0-9)
-        const eL = Math.floor(e * 10);
-        const rL = Math.floor(r * 10);
-        const cL = Math.floor(c * 10);
-        const dL = Math.floor(d * 10);
-        const sL = Math.floor(s * 10);
-
-        // Compute a state index from 0 to 99999
-        const stateIndex = eL + rL * 10 + cL * 100 + dL * 1000 + sL * 10000;
-        
-        // Map 100k states to 9 directives using a prime-multiplication hash for better distribution
-        const prime = 99991; 
-        const mappedIndex = (stateIndex * prime) % 9;
-        
-        const directives = ["HALT", "WAIT", "STABILIZE", "GRIND", "CLARIFY", "FORTIFY", "EXECUTE", "EXPAND", "SCALE BACK"];
-        return directives[Math.abs(mappedIndex)];
+  // MCP status — cappo-backend
+  app.get("/api/mcp/status", (req, res) => {
+    // Always include local MCP health alongside the upstream response
+    const local = {
+      local_mcp: {
+        connected: mcpStatus.connected,
+        reconnecting: mcpStatus.reconnecting,
+        reconnectAttempts: mcpStatus.reconnectAttempts,
+        lastConnected: mcpStatus.lastConnected,
+        uptime: Math.floor((Date.now() - mcpStatus.startTime) / 1000),
+      }
+    };
+    if (!CAPPO()) {
+      return res.json({ ...local, upstream: "NOT_CONNECTED", hint: "Set CAPPO_BACKEND_URL" });
     }
-    
-    const directive = calculateSekedDirective(e, r, c, d, s);
-
-    res.json({
-        energy: e,
-        resilience: r,
-        confidence: c,
-        diversity: d,
-        stability: s,
-        directive: directive
-    });
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/mcp/status", "GET", null, res);
   });
 
-  app.get("/api/uacp/layers", (req, res) => {
-    res.json([
-        { layer: 'cognitive', status: 'active', latency: 420 },
-        { layer: 'context', status: 'active', latency: 85 },
-        { layer: 'execution', status: 'isolated', latency: 125 },
-        { layer: 'hitl', status: 'idempotent', latency: 0 }
-    ]);
-  });
+  // General health — veklom-byos-backend
+  app.get("/api/status", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/monitoring/health", "GET", null, res));
 
-  app.get("/api/uacp/bounded", (req, res) => {
-    res.json({
-        phi_ratio: 1.618,
-        carbon_intensity: 0.24,
-        utilization: 0.88,
-        water_risk: 'low'
-    });
-  });
+  app.get("/api/v1/monitoring/health", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/monitoring/health", "GET", null, res));
 
-  app.get("/api/uacp/security", (req, res) => {
-    res.json({
-        surfaces: [
-            { name: "Tool Poisoning", threat_level: "critical", containment: 0.92, description: "Schema validation & description version pinning" },
-            { name: "Rug Pull", threat_level: "high", containment: 0.88, description: "Immutable tool registry & hash verification" },
-            { name: "EchoLeak (CVE-2025-32711)", threat_level: "critical", containment: 0.99, description: "Markdown sanitization & egress allowlisting" },
-            { name: "Indirect Injection", threat_level: "medium", containment: 0.75, description: "Content source tagging & spotlighting" },
-            { name: "Shadow Servers", threat_level: "high", containment: 0.85, description: "Attestation-based authentication & scoped delegation" },
-            { name: "Cross-Server Shadowing", threat_level: "medium", containment: 0.90, description: "Architectural isolation via context partitioning" },
-            { name: "Path Traversal", threat_level: "low", containment: 0.99, description: "Hardware-isolated MicroVM sandboxing" }
-        ],
-        gateway: {
-            sanitization: 'active',
-            redaction: 'active',
-            auditing: 'active',
-            egress_control: 'active',
-            last_scan_result: 'clear'
-        }
-    });
-  });
+  app.get("/api/v1/security/stats", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/security/stats", "GET", null, res));
 
-  app.get("/api/uacp/governance", (req, res) => {
-    res.json({
-        xaa_status: 'enforced',
-        jit_access: 'active',
-        secretless_mode: true,
-        active_agents: 12,
-        shadow_ai_detected: 0
-    });
-  });
+  app.post("/api/v1/privacy/detect-pii", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/privacy/detect-pii", "POST", req.body, res));
 
-  app.get("/api/uacp/roadmap", (req, res) => {
-    res.json([
-        { id: 1, label: "Discovery", status: "completed", description: "Inventory all active agents and MCP servers.", target_threat: "Shadow AI Access" },
-        { id: 2, label: "Policy", status: "completed", description: "Establish Agency Governance & OWASP alignments.", target_threat: "Excessive Agency" },
-        { id: 3, label: "Identity", status: "in-progress", description: "Transition to Ephemeral JIT Scoped Credentials.", target_threat: "Lateral Movement" },
-        { id: 4, label: "Defense", status: "planned", description: "Architect Zero-Trust MCP Gateway Proxy.", target_threat: "Protocol Exploitation" },
-        { id: 5, label: "Regulatory", status: "planned", description: "Full EU AI Act Alignment & Article-14 HITL Gates.", target_threat: "Compliance Liabilities" }
-    ]);
-  });
+  app.post("/v1/exec", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/v1/exec", "POST", req.body, res));
 
-  app.get("/api/uacp/hub/metrics", (req, res) => {
-    res.json({
-        determinism_ratio: 3.0,
-        certainty_index: 0.9999,
-        acceptable_noise: 0.05,
-        deterministic_entropy: 0.012,
-        latency: 12.8,
-        coherence: 89.2,
-        operational_plane_locked: true,
-        active_agents_consensus: 10,
-        gopher_policy_status: 'ACTIVE',
-        system_progress: 0.0000001
-    });
-  });
+  app.post("/api/v1/auth/register", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/register", "POST", req.body, res));
 
-  app.get("/api/uacp/hub/ssrn", (req, res) => {
-    res.json([
-        { node: "Memory Dynamics (Historical Heuristics)", match_strength: 92.41 },
-        { node: "Proximal Projection for Doubly Sparse Regularized Models", match_strength: 97.77 },
-        { node: "Boosting Team Modeling (Tempo-Relational)", match_strength: 94.73 },
-        { node: "Sequential vs. Simultaneous Entanglement Swapping", match_strength: 91.86 },
-        { node: "Ergotropy Protection via Cavity Detuning", match_strength: 90.01 },
-        { node: "Catastrophe-dispersion models in varying environments", match_strength: 89.46 },
-        { node: "Human-computer interactions predict mental health", match_strength: 88.77 },
-        { node: "FTPrimitiveBench: Logical Computation Suite", match_strength: 87.88 }
-    ]);
-  });
+  app.post("/api/v1/cost/predict", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/cost/predict", "POST", req.body, res));
 
-  app.get("/api/uacp/hub/observability", (req, res) => {
-    res.json([
-        { name: "UACP_PRESSURE", state: "RISING", value: 0.82 },
-        { name: "COHERENCE_TRANSITION", state: "STABLE", value: 0.95 },
-        { name: "SIGNAL_NOISE", state: "FALLING", value: 0.04 }
-    ]);
-  });
+  app.post("/api/v1/content-safety/scan", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/content-safety/scan", "POST", req.body, res));
 
-  app.post("/api/pgl/commit", (req, res) => {
-    res.json({ 
-        status: "success", 
-        certificate_id: `cert-${Math.random().toString(36).substring(7)}`,
-        message: "Constitutional Write Committed. Ed25519 Birth Certificate Issued."
-    });
-  });
+  // Climate — veklom-byos-backend
+  app.get("/api/climate/emissions", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/climate/emissions", "GET", null, res));
 
-  app.get("/api/pgl/spdx", (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.json({
-        spdxVersion: "SPDX-3.0.1",
-        profile: "AI",
-        genome_hash: GENOME_HASH,
-        compliance: "Article-12-Verified"
-    });
-  });
+  app.get("/api/climate/regional", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/climate/regional", "GET", null, res));
 
-  app.get("/api/pgl/cyclonedx", (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.json({
-        bomFormat: "CycloneDX",
-        specVersion: "1.7",
-        model_layers: CURRENT_GENOME_LAYERS,
-        governance_overhead: "420μs"
-    });
-  });
+  // PGL / GnomLedger
+  app.get("/api/pgl/genome", (req, res) =>
+    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/genome", "GET", null, res));
+
+  app.get("/api/pgl/ledger", (req, res) =>
+    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/ledger", "GET", null, res));
+
+  app.post("/api/pgl/commit", (req, res) =>
+    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/commit", "POST", req.body, res));
+
+  app.get("/api/pgl/spdx", (req, res) =>
+    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/spdx", "GET", null, res));
+
+  app.get("/api/pgl/cyclonedx", (req, res) =>
+    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/cyclonedx", "GET", null, res));
+
+  // SEKED — veklom-byos-backend
+  app.get("/api/seked/status", (req, res) =>
+    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/seked/status", "GET", null, res));
+
+  // UACP layers — cappo-backend
+  app.get("/api/uacp/layers", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/layers", "GET", null, res));
+
+  app.get("/api/uacp/bounded", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/bounded", "GET", null, res));
+
+  app.get("/api/uacp/security", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/security", "GET", null, res));
+
+  app.get("/api/uacp/governance", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/governance", "GET", null, res));
+
+  app.get("/api/uacp/roadmap", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/roadmap", "GET", null, res));
+
+  app.get("/api/uacp/hub/metrics", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/hub/metrics", "GET", null, res));
+
+  app.get("/api/uacp/hub/ssrn", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/hub/ssrn", "GET", null, res));
+
+  app.get("/api/uacp/hub/observability", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/hub/observability", "GET", null, res));
 
   // --- RARA Governance Logic ---
   const RARA_GOVERNANCE_GATE = (req: any, res: any, next: any) => {
