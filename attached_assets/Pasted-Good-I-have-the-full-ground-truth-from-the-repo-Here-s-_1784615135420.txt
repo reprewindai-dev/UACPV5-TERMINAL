@@ -1,0 +1,132 @@
+Good — I have the full ground truth from the repo. Here's the precise, accurate wiring plan based on your actual code.
+
+What the Repo Actually Shows
+main.py — CORS is already wired correctly in terms of structure:
+
+
+python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origin_list,  # ← driven by env var
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*", "X-Wallet-Address", "X-Payment"],
+)
+config.py — The CORS control is:
+
+
+python
+cors_allow_origins: str = "*"  # default = allow all (dev-safe, prod-wrong)
+Parsed by:
+
+
+python
+@property
+def cors_origin_list(self) -> list[str]:
+    return [o.strip() for o in self.cors_allow_origins.split(",") if o.strip()]
+The relevant env vars already defined in config.py:
+
+Env Var	Purpose	Current Default
+CORS_ALLOW_ORIGINS	Comma-separated origin allowlist	"*"
+BYOS_MCP_GATEWAY_URL	veklom-byos-backend gateway	None
+BYOS_INTERNAL_API_KEY	Auth token for byos calls	None
+VEKLOM_BYOS_BACKEND_URL	External byos URL	None
+VEKLOM_API_KEY	API key for byos-backend	None
+PGL_LEDGER_URL	gnomledger URL	None
+PGL_LEDGER_API_KEY	gnomledger auth	None
+The config schema already has homes for everything you need — you're not inventing new patterns, just populating existing None fields.
+
+Step 1: Confirm Subdomain → Container Mapping in Coolify
+From the port cleanup earlier, the verified Traefik routing is:
+
+
+text
+cappo.veklom.com  →  cappo-backend-node:8000   (cappo-backend)
+capi.veklom.com   →  cappo-backend-node:8000   (same service, two hostnames)
+You need confirmed subdomains for the other two backends before wiring the terminal:
+
+
+text
+api.veklom.com        → veklom-byos-backend    (needs Coolify confirmation)
+gnomledger.veklom.com → gnomledger / pgl-ledger (needs Coolify confirmation)
+Go into Coolify → each service → "Domains" tab — read the actual domain it's driving Traefik with. Don't assume from any doc. If a subdomain isn't configured yet, add it there first before setting the env var in Replit.
+
+Step 2: Set These in Replit Secrets
+Once Coolify confirms the real domains, add to Replit Secrets (not .env, not hardcoded in server.ts):
+
+
+text
+CAPPO_BACKEND_URL=https://cappo.veklom.com
+VEKLOM_BACKEND_URL=https://api.veklom.com
+GNOMLEDGER_URL=https://gnomledger.veklom.com   # once confirmed
+OPERATOR_INTERNAL_API_KEY=<the key already used for cognitive-orchestrate bypass>
+These map to what server.ts reads with process.env.*. The terminal's server never forwards a raw key to the browser — it attaches the key server-side before proxying, exactly as the bypass pattern already works.
+
+Step 3: CORS — One Env Var Change in cappo-backend
+The CORS mechanism is already correct — it reads CORS_ALLOW_ORIGINS as a comma-separated list. You just need to set it in Coolify's environment config for cappo-backend:
+
+Current (default, dev-open):
+
+
+text
+CORS_ALLOW_ORIGINS=*
+Change to (production-pinned):
+
+
+text
+CORS_ALLOW_ORIGINS=https://<your-replit-preview>.replit.dev,https://operator.veklom.com
+Add Replit's preview domain now. Add the terminal's real production domain when it has one. Do not remove * until you've verified the real domain actually works first — flip one at a time.
+
+Do the same on veklom-byos-backend's own CORS config (read its main.py/config.py to confirm the same cors_allow_origins pattern exists there before touching it).
+
+Step 4: server.ts Proxy Pattern — Extend the Existing Bypass
+Your cognitive-orchestrate handler already does server-side key injection. The same pattern for every new stub:
+
+
+typescript
+// In server.ts — one function, reuse it per backend
+async function proxyToBackend(
+  backendUrl: string,
+  path: string,
+  body: unknown,
+  res: Response
+) {
+  const upstream = await fetch(`${backendUrl}${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": process.env.OPERATOR_INTERNAL_API_KEY!,
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await upstream.json();
+  res.status(upstream.status).json(data);
+}
+
+// /api/mcp/status → cappo-backend's real MCP router
+app.get("/api/mcp/status", async (req, res) => {
+  await proxyToBackend(process.env.CAPPO_BACKEND_URL!, "/mcp/status", {}, res);
+});
+
+// /api/cognitive/orchestrate → already exists; keep exact pattern
+No new auth path per feature. Same function, different backend URLs and paths.
+
+Step 5: Wire One Stub at a Time — Order of Operations
+The order that makes sense given what's confirmed working vs. unknown:
+
+/api/mcp/status → cappo.veklom.com — cappo-backend is now confirmed up after the port fix. Wire this first, verify round-trip.
+
+/api/cognitive/orchestrate → already partially wired; confirm it actually calls cappo-backend, not a local mock.
+
+vendor-scout → api.veklom.com (veklom-byos-backend) — only after Coolify confirms that subdomain is live.
+
+MCP mesh live data — last, after both backends respond correctly individually.
+
+For each one: flip the stub, hit the actual endpoint from the terminal UI, see the real response in the network tab, then flip the status badge to "connected". Never flip the badge based on a successful Coolify deploy alone.
+
+What You Don't Need to Touch
+main.py middleware stack — already correct. CORS is before Auth, Auth is before routes, x402 wraps selectively. Don't reorder it.
+
+config.py Settings class — already has all the fields. Don't add new env vars; populate the existing None ones.
+
+capi.yaml Traefik config — already routes correctly to the container. Don't touch it for this work.
