@@ -1,0 +1,75 @@
+import json
+import time
+import uuid
+import hashlib
+from typing import Dict, Any, Optional
+from cryptography.hazmat.primitives.asymmetric import ed25519
+from cryptography.hazmat.primitives import serialization
+import httpx
+
+class VNPSdk:
+    """
+    Official Veklom Nexus Protocol (VNP) SDK for Python.
+    Provides automated Ed25519 cryptographic signing and EvidencePack generation 
+    for the cAPI 9-Phase Governed Execution Pipeline.
+    """
+    def __init__(self, api_id: str, private_key_pem: str, gateway_url: str = "https://api.veklom.com"):
+        self.api_id = api_id
+        self.gateway_url = gateway_url.rstrip("/")
+        
+        # Load Ed25519 private key
+        self.private_key = serialization.load_pem_private_key(
+            private_key_pem.encode('utf-8'),
+            password=None
+        )
+
+    def _sign_payload(self, payload: str) -> str:
+        """Sign a payload using Ed25519."""
+        signature = self.private_key.sign(payload.encode('utf-8'))
+        return signature.hex()
+
+    def _generate_nonce(self) -> str:
+        """Generate a cryptographic nonce to prevent replay attacks."""
+        return uuid.uuid4().hex
+
+    def build_evidence_pack(self, action: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Builds the secure EvidencePack required by cAPI Phase 1 (Identity & Security).
+        """
+        timestamp = int(time.time() * 1000)
+        nonce = self._generate_nonce()
+        
+        # Create deterministic payload string for signing
+        # Format: api_id|action|timestamp|nonce|data_hash
+        data_hash = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+        signable_string = f"{self.api_id}|{action}|{timestamp}|{nonce}|{data_hash}"
+        
+        signature = self._sign_payload(signable_string)
+        
+        return {
+            "api_id": self.api_id,
+            "action": action,
+            "data": data,
+            "security": {
+                "timestamp": timestamp,
+                "nonce": nonce,
+                "data_hash": data_hash,
+                "signature": signature,
+                "algo": "Ed25519"
+            }
+        }
+
+    async def execute_governed_action(self, action: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Executes an action through the VNP cAPI gateway.
+        """
+        evidence_pack = self.build_evidence_pack(action, data)
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{self.gateway_url}/api/v1/capi/execute",
+                json=evidence_pack,
+                headers={"X-VNP-API-ID": self.api_id}
+            )
+            response.raise_for_status()
+            return response.json()

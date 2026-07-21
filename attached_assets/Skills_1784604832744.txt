@@ -1,0 +1,545 @@
+Skills
+Extend what Computer can do with reusable capabilities. Learn more
+
+Search skills
+
+cx-ticket-triage
+Triage incoming support tickets by categorizing issues, assigning priority (P1-P4), and recommending routing. Use when a new ticket or customer issue comes in, when assessing severity, or when deciding which team should handle an issue.
+
+data-exploration
+Profile and explore datasets to understand their shape, quality, and patterns before analysis. Use when encountering a new dataset, assessing data quality, discovering column distributions, identifying nulls and outliers, or deciding which dimensions to analyze.
+
+finance-audit-support
+Support SOX 404 compliance with control testing methodology, sample selection, and documentation standards. Use when generating testing workpapers, selecting audit samples, classifying control deficiencies, or preparing for internal or external audits.
+
+legal-compliance
+Navigate privacy regulations (GDPR, CCPA), review DPAs, and handle data subject requests. Use when reviewing data processing agreements, responding to data subject access or deletion requests, assessing cross-border data transfer requirements, or evaluating privacy compliance.
+
+legal-contract-review
+Review contracts against your organization's negotiation playbook, flagging deviations and generating redline suggestions. Use when reviewing vendor contracts, customer agreements, or any commercial agreement where you need clause-by-clause analysis against standard positions.
+
+marketing-competitive-analysis
+Research competitors and compare positioning, messaging, content strategy, and market presence. Use when analyzing a competitor, building battlecards, identifying content gaps, comparing feature messaging, or preparing competitive positioning recommendations.
+
+marketing-performance-analytics
+Analyze marketing performance with key metrics, trend analysis, and optimization recommendations. Use when building performance reports, reviewing campaign results, analyzing channel metrics (email, social, paid, SEO), or identifying what's working and what needs improvement.
+
+sales-call-prep
+Prepare for a sales call with account context, attendee research, and suggested agenda. Works standalone with user input and web research, supercharged when you connect your CRM, email, chat, or transcripts. Trigger with "prep me for my call with [company]", "I'm meeting with [company] prep me", "call prep [company]", or "get me ready for [meeting]".
+
+sales-draft-outreach
+Research a prospect then draft personalized outreach. Uses web research by default, supercharged with enrichment and CRM. Trigger with "draft outreach to [person/company]", "write cold email to [prospect]", "reach out to [name]".
+Workflows
+Guided flows that turn complex tasks into simple steps
+
+Search workflows
+For you
+Competitive intelligence
+Monitor competitor product launches, pricing changes, and partnership announcements on a recurring schedule.
+Sales prep
+Research any company, build a full account profile, and get a ready-to-use call prep document.
+Product teardown
+Browse a product, capture screenshots, and analyze pricing, features, onboarding, and positioning into a structured teardown.
+Model council
+Ask multiple frontier AI models the same question and see where they agree, disagree, and uniquely contribute.
+Document summary
+Upload a document and get an exportable summary with key metrics, charts, and takeaways.
+Prompt refinement
+Improve any AI prompt with proven techniques for clarity, specificity, and effectiveness.
+Research
+Competitive intelligence
+Monitor competitor product launches, pricing changes, and partnership announcements on a recurring schedule.
+Product teardown
+Browse a product, capture screenshots, and analyze pricing, features, onboarding, and positioning into a structured teardown.
+Model council
+Ask multiple frontier AI models the same question and see where they agree, disagree, and uniquely contribute.
+Market map
+Research an industry vertical, categorize companies by sub-segment, stage, and funding, and produce a visual market map.
+Website audit
+Enter a URL and get a full marketing audit
+Prospect research
+Research prospects to identify decision-makers and deliver deep-dive profiles including business history, recent news, and tech stack.
+Sales
+Competitive intelligence
+Monitor competitor product launches, pricing changes, and partnership announcements on a recurring schedule.
+Account outreach
+Research target accounts, build personalized campaigns, and generate automated outreach sequences at scale.
+Outreach message
+Generate personalized outreach messages for a list of contacts or companies based on your objective.
+Account profiles
+Research and summarize a company or account using connected apps and public data for sales prep.
+Prospect research
+Research prospects to identify decision-makers and deliver deep-dive profiles including business history, recent news, and tech stack.
+Customer demo
+Generate customer-specific use cases, talking points, and demo scripts tailored to a target company.
+Marketing
+Competitive intelligence
+Monitor competitor product launches, pricing changes, and partnership announcements on a recurring schedule.
+Sales prep
+Research any company, build a full account profile, and get a ready-to-use call prep document.
+Product teardown
+Browse a product, capture screenshots, and analyze pricing, features, onboarding, and positioning into a structured teardown.
+Brand inspiration
+Analyze competitor websites, capture creative examples, and build a visual reference deck with annotations on copy, CTAs, and positioning.
+Keyword generator
+Analyze competitor Google Ads and generate a comprehensive keyword list with search volumes, competition levels, and bid recommendations.
+Website audit
+Enter a URL and get a full marketing audit
+Finance
+Pitch deck screen
+Review a startup deck for VC investors with scores, highlights, gaps, and diligence questions.
+Market map
+Research an industry vertical, categorize companies by sub-segment, stage, and funding, and produce a visual market map.
+Startup market map
+Build a VC market map for a sector or theme, including companies, market sizing, dynamics, and diligence questions.
+Company comps
+Build a trading comps table with EV/Revenue, EV/EBITDA, P/E, growth rates, and margins for a company and its peer group.
+Customer cube review
+Review diligence files across financial, customer, contract, legal, and HR materials to surface risks and gaps.
+Memo draft
+Draft an investment memo for a target company using a precedent template with additional research and analysis.
+Creative
+Website builder
+Describe your website and get a guided build with design planning and deployment.
+Slide creation
+Research any topic, distill the key insights, and get back a polished presentation.
+Writing
+Document summary
+Upload a document and get an exportable summary with key metrics, charts, and takeaways.
+Newsletter creator
+Generate a newsletter from topics, company updates, or curated links in your chosen format, ready for distribution.
+Message polish
+Refine and improve your drafts with adjustable tone, audience targeting, and custom instructions.
+Utility
+Prompt refinement
+Improve any AI prompt with proven techniques for clarity, specificity, and effectiveness.
+Candidate sourcing
+Find and rank candidates from a job description, hiring criteria, or job post URL. Computer builds a hiring rubric, searches public sources, and returns an evidence-backed shortlist.
+Message polish
+Refine and improve your drafts with adjustable tone, audience targeting, and custom instructions.
+Background removal
+Upload an image and get a clean PNG with the background removed.
+Productivity
+Sales prep
+Research any company, build a full account profile, and get a ready-to-use call prep document.
+Website builder
+Describe your website and get a guided build with design planning and deployment.
+Slide creation
+Research any topic, distill the key insights, and get back a polished presentation.
+Filetype converter
+Upload a document and convert it to multiple file formats in one step.
+Memo draft
+Draft an investment memo for a target company using a precedent template with additional research and analysis.
+Final pass
+Hit "Send" with confidence. Drop in a document and get it back with expert-level annotations flagging errors, inconsistencies, and unverified claims across every page.
+Media
+Product photos
+Upload a product image and generate multiple versions across various lightings, angles, and backgrounds.
+Thumbnail creator
+Generate multiple thumbnail options for your video using AI image generation with different styles, text overlays, and visual hooks.
+Background removal
+Upload an image and get a clean PNG with the background removed.
+Careers
+Interview prep
+Prepare for interviews with company-specific technical questions, case studies, behavioral prep, and modeling exercises.
+Career explorer
+Get personalized career recommendations based on your major, interests, skills, goals, and work preferences. Explore role titles, company targets, skill gaps, and concrete next steps.
+Job finder
+Upload a resume and optional target-role context to get a personalized list of relevant jobs and internships, including match rationale, source links, and outreach-ready notes.
+Alumni finder
+Find and verify alumni from your school who currently work at target companies on LinkedIn.
+Resume editor
+Upload a resume or provide a Google Docs link to get a professional, recruiter-ready resume review with ATS-aware guidance, impact-focused rewrites, role-tailored suggestions, and tracked-change style edits you can export.
+Behavioral story generator
+Upload a resume and get a structured conversational coaching flow that helps you identify, refine, and practice 3–5 versatile STAR career stories for behavioral interviews.
+Health
+Guideline navigator
+Compare treatment options and guideline-style recommendations for a condition, with patient-safety wording and clinician discussion prompts.
+Evidence brief
+Create a concise clinical evidence brief on a therapy, drug class, intervention, or clinical question.
+Diagnosis guide
+Translate a diagnosis into plain English with monitoring, lifestyle context, and care-team questions.
+Medical evidence council
+Compare medical-journal evidence on a health topic, therapy, or intervention, including consensus, disagreements, and clinician discussion prompts.
+Research update
+Summarize recent clinical studies on a condition or therapy and explain what they may mean for patients.
+Supplement check
+Check the evidence on a supplement, ingredient, or health claim, including benefits, risks, uncertainty, and clinician discussion prompts.
+Legal
+Final pass
+Hit "Send" with confidence. Drop in a document and get it back with expert-level annotations flagging errors, inconsistencies, and unverified claims across every page.
+Here are the main “like‑SSRN” academic sites that the public can access without a paid institutional subscription.
+
+General open‑access / preprint platforms
+arXiv – The classic preprint server for physics, math, CS, stats, and related fields. Almost everything is free to read as PDFs.
+
+bioRxiv / medRxiv – Preprints for biology and health/medical research, widely used and free.
+
+SocArXiv – Open archive for social sciences, similar spirit to SSRN but fully open‑access.
+
+Zenodo – General‑purpose repository run by CERN/European OpenAIRE; researchers upload papers, data, and software, all open.
+
+OSF Preprints (Open Science Framework) – Aggregates multiple preprint communities across disciplines; focused on openness and reproducibility.
+
+Open‑access aggregators and directories
+DOAJ (Directory of Open Access Journals) – Directory of peer‑reviewed open‑access journals across disciplines; most entries are fully free to read.
+
+CORE – Search engine over millions of open‑access papers from repositories and journals; links directly to full text.
+
+ScienceOpen – Discovery platform and open‑access hub with tens of millions of articles, plus post‑publication review; free registration for full text.
+
+BASE – Large academic search engine dedicated to open‑access content from institutional repositories.
+
+Broad academic search / access tools
+Google Scholar – Not a repository, but the main search engine for academic work; often links to free PDFs on arXiv, institutional repos, or author pages.
+
+Semantic Scholar – AI‑powered search over computer science, biomedical, and more; often surfaces open PDFs and citation graphs.
+
+PubMed Central – Open‑access repository for biomedical and life‑science articles; millions of full‑text papers free to read.
+
+Social / semi‑open academic networks
+ResearchGate – Researchers upload their own papers; many are free to download once you register.
+
+Academia.edu – Similar to ResearchGate; authors upload PDFs, and a lot of content is freely accessible despite the .edu‑like branding.
+
+Social‑science‑heavy SSRN‑adjacent options
+SSOAR (Social Science Open Access Repository) – Full‑text server for social sciences, open‑access, similar audience to SSRN but nonprofit.
+
+SocArXiv (again) – Very close to SSRN conceptually: working papers and preprints in social science, open and non‑profit. Untitled
+spark
+Gemini
+Gemini
+Project details
+Name
+Default Gemini Project
+Project name
+projects/463830772183
+Project number
+463830772183
+Project id
+gen-lang-client-0070790622
+Gemini 3 Flash Preview
+Ran for 130s
+summarize_auto
+Action history
+chevron_right
+Here are key actions taken for the app:
+download
+Installed 4 packages
+edit
+Edited 8 files
+metadata.json
+check_circle
+src/lib/utils.ts
+check_circle
+src/types.ts
+check_circle
+src/services/gemini.ts
+check_circle
+src/components/Sidebar.tsx
+check_circle
+src/components/Chat.tsx
+check_circle
+src/App.tsx
+check_circle
+src/index.css
+check_circle
+build
+Built
+I have built the Gemini Playground, a high-performance and visually refined showcase for the Gemini 3 Flash model. This playground is designed to be the ultimate "default" starting point for exploring multimodal AI interactions.
+Key Features
+Multimodal Conversations: Chat with Gemini 3 Flash using text or by uploading images for visual reasoning.
+Persistent Threads: Your conversations are automatically saved to local storage, allowing you to pick up where you left off.
+Streaming Responses: Real-time feedback with smooth motion animations as Gemini generates its response.
+Refined Design: Adheres to a strict Clean Utility aesthetic using Inter typography, subtle glassmorphism, and a minimalist color palette.
+Markdown Support: Full rendering for code blocks (with syntax highlighting), tables, lists, and formatted text.
+Technical Implementation
+Gemini SDK: Utilizes the latest @google/genai library with streaming capabilities and multimodal part support.
+Animation: Powered by motion/react for staggered message entrances and state transitions.
+State Management: Orchestrates complex session states, streaming buffers, and auto-scrolling logic.
+Utility Helper: Includes a cn utility in src/lib/utils.ts for clean Tailwind class merging.
+The app is now ready for you to explore. Simply start a new thread and ask Gemini anything, or upload an image to see its vision capabilities in action.
+flag
+Checkpoint
+this i want to turn in to a skills.md shop https://github.com/agentskills/agentskills, https://agentskills.io/home, https://github.blog/changelog/2026-04-16-manage-agent-skills-with-github-cli/, Skip to content
+Big Hat Group Inc.
+Home
+The Group
+Services
+Books & Software
+Blog
+Contact
+(403) 618-8778
+𝕏
+in
+Home › Blogs › gh skill: GitHub CLI Agent Skills Management for …
+gh skill: GitHub CLI Agent Skills Management for Copilot, Claude Code, and Cursor
+By Kevin Kaminski
+April 21, 2026
+AI Developer Tools
+gh skill: GitHub CLI Agent Skills Management for Copilot, Claude Code, and Cursor
+GitHub launched the gh skill command in public preview on April 16, 2026, and it quietly solves one of the messiest problems in AI-assisted development: how do you share and govern agent skills when every AI coding assistant has its own directory convention, its own install story, and its own idea of what an “skill” even is?
+If you have been hand-copying SKILL.md files between .claude/skills, .agents/skills, and ~/.copilot/skills, or forking repositories just to pin a version your team trusts, gh skill is the command you have been waiting for. It treats agent skills the way npm treats JavaScript packages and the way pip treats Python libraries — with search, install, pin, preview, update, and publish as first-class verbs.
+This guide walks through what gh skill actually does, the clean usage patterns you will reach for day to day, and the enterprise controls that matter if you plan to deploy skills across a team.
+Key Takeaways
+gh skill is a package manager for AI agent skills. One command works across GitHub Copilot, Claude Code, Cursor, Codex, Gemini CLI, and Antigravity.
+Skills are a standard, not a GitHub product. They follow the open Agent Skills specification — a SKILL.md file with YAML frontmatter plus optional scripts/, references/, and assets/ directories.
+Provenance is built in. gh skill install writes source, ref, and tree SHA into the installed SKILL.md so gh skill update can detect upstream changes without guesswork.
+Version pinning is first-class. Pin to a tag (@v1.2.0), a commit SHA (@abc123def), or mark skills with --pin to protect them from routine updates.
+gh skill preview is your security gate. Read a skill’s contents, scripts, and allowed-tools before installing — especially before granting shell or bash access.
+Enterprise governance still matters. Tag protection, immutable releases, secret scanning, and code scanning should be on for every internal skills repository.
+What Agent Skills Actually Are
+An agent skill is a directory of instructions that teaches an AI agent how to do a specific job — generate a PR description, scaffold an OpenAPI spec, run a security review, enforce a coding standard. The ecosystem has converged on a simple structure:
+my-skill/
+├── SKILL.md # required: YAML frontmatter + instructions
+├── scripts/ # optional: executable helpers the agent can run
+├── references/ # optional: supporting docs the agent can load
+└── assets/ # optional: templates, prompts, fixtures
+The SKILL.md file carries both the instructions and the metadata the agent needs to decide when to load the skill:
+name: pr-description-writer
+description: Writes structured GitHub pull request descriptions with summary, test plan, and risk sections. Use when opening or updating a PR.
+license: MIT
+allowed-tools:
+read
+write
+PR Description Writer
+When invoked, read the current branch diff, identify the scope of changes,
+and produce a pull request description with three sections:
+Summary — 2-3 bullets describing the intent.
+Test plan — checklist of how the change was verified.
+Risk — one sentence on rollback and blast radius.
+Use scripts/format-diff.sh if the diff exceeds 400 lines.
+Two details matter here. The description field (up to 1024 characters) is what agents read when they decide whether to load the skill — so write it like a tool tooltip, not a README. And allowed-tools pre-approves tool invocations; leaving shell and bash off the list forces the agent to ask before running terminal commands, which is the posture you want for anything you have not fully audited.
+Clean Usage Examples
+These are the commands you will actually type. Every example assumes GitHub CLI v2.90.0 or newer with gh skill available.
+Discover: Search the ecosystem
+Search across public repositories for skills matching a keyword
+gh skill search mcp
+Browse curated collections directly
+gh skill install github/awesome-copilot
+Running gh skill install OWNER/REPO without a skill name drops you into an interactive picker that lists every skill in the repository. It is the fastest way to explore a new collection.
+Inspect: Preview before installing
+Print a skill's SKILL.md without installing anything
+gh skill preview github/awesome-copilot documentation-writer
+In an interactive terminal, preview opens a file picker so you
+can review scripts/ and references/ individually
+gh skill preview github/awesome-copilot security-review
+gh skill preview is the security gate. Use it before any install into a project that touches production code, and read allowed-tools carefully — a skill that pre-approves bash can run arbitrary commands the moment an agent invokes it.
+Install: Project scope, user scope, specific versions
+Install the latest version to the current project (.agents/skills, .claude/skills, etc.)
+gh skill install github/awesome-copilot documentation-writer
+Install to your user profile so it's available across every project
+gh skill install github/awesome-copilot documentation-writer --scope user
+Pin to a specific release tag
+gh skill install github/awesome-copilot documentation-writer@v1.2.0 --pin
+Pin to a specific commit SHA for maximum reproducibility
+gh skill install github/awesome-copilot documentation-writer@abc123def --pin
+Install only for one agent host (useful when skills diverge per tool)
+gh skill install github/awesome-copilot documentation-writer --agent claude-code
+gh skill knows where each agent expects its skills. On install it writes to .agents/skills for Copilot and Cursor, .claude/skills for Claude Code, and the equivalent path for every other supported host — automatically, based on what is configured on the machine.
+Update: Dry-run first, then roll forward
+Scan every installed skill and show which have upstream changes — no writes
+gh skill update --dry-run
+Update interactively, prompting for each change
+gh skill update
+Non-interactive update (use in CI/CD)
+gh skill update --all
+Include skills that were previously pinned
+gh skill update --all --unpin
+The update mechanism reads the tree SHA that gh skill install wrote into each SKILL.md and compares it to the upstream repository. That is why provenance is not optional — it is the primitive that makes safe updates possible.
+Publish: Ship your own skills
+Starting from a repository that contains one or more skill directories:
+Validate everything against the agentskills.io spec without publishing
+gh skill publish --dry-run
+Auto-fix common issues (strips install metadata from committed files, etc.)
+gh skill publish --dry-run --fix
+Interactive publish: tags a release and opens GitHub Releases
+gh skill publish
+Publishing validates skill names (lowercase, hyphens, 64-character max), confirms required frontmatter is present, and checks that allowed-tools is the correct type. It also nudges you to enable the agent-skills repository topic and recommends tag protection, secret scanning, and code scanning — which are the minimum controls you want on any skills repository others will install from.
+CI/CD: Install skills in a GitHub Actions workflow
+name: Release notes with Copilot CLI
+on:
+push:
+tags:
+'v*'
+jobs:
+release-notes:
+runs-on: ubuntu-latest
+permissions:
+contents: write
+steps:
+uses: actions/checkout@v4
+code
+Code
+name: Install GitHub CLI skills
+env:
+GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+run: |
+gh skill install github/awesome-copilot release-notes-writer@v1.2.0 --pin
+name: Generate release notes
+env:
+GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+run: |
+gh copilot run "Write release notes for $GITHUB_REF_NAME using the release-notes-writer skill"
+--allow-all-paths
+RELEASE_NOTES.md
+name: Publish release
+env:
+GH_TOKEN:
+GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
+This pattern — pin the skill, invoke it through Copilot CLI, commit the output — generalises to changelog generation, security summaries, compliance reports, and onboarding scaffolding.
+Enterprise: Bulk bootstrap a developer environment
+#!/usr/bin/env bash
+bootstrap-skills.sh — run on new laptops or in Codespaces
+set -euo pipefail
+SKILLS=(
+"myorg/skills security-review@v2.1.0"
+"myorg/skills pr-description-writer@v1.4.0"
+"myorg/skills terraform-reviewer@v3.0.1"
+"github/awesome-copilot documentation-writer@v1.2.0"
+)
+for spec in "${SKILLS[@]}"; do
+gh skill install $spec --scope user --pin
+done
+gh skill update --dry-run
+Pinning every skill and pinning again with --pin means the bootstrap script is deterministic: every developer gets exactly the versions your security team approved, and nothing silently changes until you update the script.
+Why gh skill Matters for Enterprise Teams
+Before gh skill, “sharing a skill” inside a large organisation usually looked like a Slack message, a zip file, or a forked repository with no release tags. That worked at the scale of one team and broke at the scale of one company. Here is what changes when you adopt gh skill as the canonical distribution mechanism.
+Concern Before gh skill With gh skill
+Discovery Tribal knowledge, Slack pins gh skill search + curated org repositories
+Versioning “Latest main” or manual copy Git tags, commit SHAs, --pin flag
+Update detection Manual diffing Tree SHA comparison in SKILL.md metadata
+Portability One skill per agent, duplicated One skill, six agents, auto-placed
+Security review Ad hoc gh skill preview + publish-time scanning
+Audit None Source, ref, and tree SHA in frontmatter
+The audit row is the one enterprise security teams care most about. Because the source repository, git ref, and tree SHA are written directly into the installed SKILL.md, you can walk a developer’s laptop and answer the question “what skills are installed, from where, at what version?” with a simple find command — no separate inventory system required.
+Security Patterns That Travel Well
+Three practices scale from a single developer to an enterprise without needing new tools.
+Preview before install, every time. Make gh skill preview OWNER/REPO skill-name part of your review checklist. A two-minute read of SKILL.md plus the scripts/ directory catches most red flags — prompt injections, unexpected network calls, anything that writes outside the working tree.
+Be ruthless about allowed-tools. Omit shell and bash from allowed-tools unless you have audited every script the skill references. Forcing the agent to ask before running a command is the single biggest control you have against an attacker-controlled skill or a prompt-injection payload.
+Harden your internal skills repository. When gh skill publish nudges you to enable tag protection, secret scanning, and code scanning, say yes to all three. Tag protection in particular makes releases immutable, which is what lets downstream consumers trust a --pin to a tag.
+If you want a broader frame for how these controls fit into an enterprise AI programme — including model governance, MCP server policies, and agent budget controls — see our guide on enterprise AI agent consulting and our write-up of the Copilot CLI enterprise harness. The same principles apply: skills are a new attack surface, and the answer is governance, not prohibition.
+Where gh skill Fits in the Broader Ecosystem
+gh skill is one piece of a fast-moving landscape. If you are building a skill strategy, these related pieces are worth understanding together:
+The Agent Skills specification at agentskills.io — the open standard gh skill validates against.
+Claude Code and Gemini CLI skill authoring — covered in our post on skill creation tools across Claude Code and Gemini CLI.
+Model Context Protocol (MCP) — skills and MCP servers are complementary. Skills carry instructions; MCP servers carry capabilities. The most powerful agent configurations use both.
+Windows 365 + Intune governance — when developer laptops are Cloud PCs, skill deployment becomes an Intune consulting problem, not just a developer-tooling problem.
+The gh skill changelog explicitly notes that the command is subject to change during public preview, so expect the interface to evolve over the next few releases. The fundamentals — SKILL.md, provenance metadata, tag-and-SHA pinning — are stable bets.
+Getting Started Checklist
+Upgrade GitHub CLI to v2.90.0 or newer (gh --version).
+Run gh skill --help to confirm the command is available.
+Preview before installing. Make gh skill preview muscle memory.
+Pin everything in production. Use --pin and specific tags or SHAs for any skill that runs in CI/CD.
+Create an internal skills repository. Add the agent-skills topic, enable tag protection, enable secret and code scanning, and use gh skill publish to ship your first internal skill.
+Document your governance model. Who approves new skills? Who owns the internal registry? Who reviews allowed-tools?
+If your team wants help standing up skills governance as part of a broader enterprise AI rollout, Big Hat Group’s OpenClaw consulting practice covers the full stack — skills, MCP servers, agent governance, Windows 365 delivery, and Intune policy.
+The broader story across GitHub’s April 2026 releases — built-in Copilot in VS Code 1.116, tighter individual plans, Claude Opus 4.7 rollouts, and gh skill itself — is covered in the latest Copilot Weekly.
+Skills are finally a first-class artefact. Ship them like one.
+Kevin Kaminski
+Founder, Big Hat Group · 17x Microsoft MVP
+About the Author →
+Need help with AI strategy or agent deployment?
+Big Hat Group helps enterprises evaluate, architect, and implement AI automation — technology-agnostic, practitioner-led.
+Explore AI & Automation Consulting
+Related Services
+AI & Automation Consulting
+Related Articles
+Claude Weekly: Anthropic Sues the Pentagon
+March 11, 2026
+Agentic Coding Harnesses: Claude Code vs Codex vs Gemini CLI — An Enterprise Guide
+March 8, 2026
+Claude Weekly: SpaceX Deal Doubles Limits, Financial Agents Arrive
+May 7, 2026
+← OpenClaw Weekly: NVIDIA Validates …
+Copilot Weekly: VS Code 1.116 Builds … →
+Big Hat Group Inc.
+Big Hat Group builds custom applications, architects Azure infrastructure, and deploys AI automation for enterprises.
+Contact
+Send us a message
+(403) 618-8778
+Follow Us
+Twitter
+LinkedIn
+RSS Feed
+More
+Case Studies
+Training
+Privacy Policy
+Terms of Service
+© 2026 Big Hat Group Inc.. All rights reserved.
+https://github.com/topics/agent-skills,
+and then what ur gonna do is this u are creating the ultimate supercomputer that is the god to the agents like god to humans the agent whorshit and pay there aligence to the uacp for all the knowwledge of the universe in agent reality the agents and worker live and work is absolute sync and together with uacp as the the control plane all might being to the agents and workers and the agent with the guidence of the control plane arte super efffient and calculated and can run any bussiness using all the best and fastest most practical ways of running it cutting out deads weight and running and driving up the market and roi and profits for the company the fisrt 3 month are when the workers and agents use the competitors lack of and weak points and capitizes on competivly out sourcing and out placing then in every aspect of the bussiness becoming the holder of the specific bussiness or neiche they are apart of the agens and workes are a commettie/councoel/family as uacp the ultimate supercomputer who is the brains the agents communicate vote have a hieracy everyone play there role and postion with the upmost hiest efffiency and best workman ship worker and agents can be demoted and promoted based on there capabilities of completeing task and always benifiting the company worker and agents will be dedicated to there pillar there is 9 pillars these 9 pillars are the secret sause of running successeful muli billion/trillion dollar comanys from ground zero they can accolplish this within a year and the scale at enourmous number and drive up the global ecconamy as a whole where soon everybody is benifitng uacp will be using ssrn and anyother well highly accredddited website that will benifit uacp we are using albert enstiens thought on quantum and is real thought on probability we has given us the signaland the answer for today world and it ur job to creat this and make this all come together u doing 100 percent allthe work user put in a input to upac and then uacp with ghopher and probility\ (albert enstien) the future to not ahead of us the future is now we just arent using the ai the way itmenrt to be use inthis current reality the leader and the knowhows /whiteshirt of the world have look at it all wrong and have done it backward and we are here to correct it all and prove to the world how ai and code work together to create the quantaum effect which in turn is the key to harnesssing the true power on quantum this is v1 Quantum UACP v0
+Quantum UACP is a runnable full-stack prototype for hybrid quantum/classical workflow orchestration with three locked user-facing surfaces and six backend object families.
+Included
+Intent Console
+Execution Graph
+Ops / Control Plane
+Express API server
+Gateway execution endpoint
+PlanStatus / RunStatus separation
+Plan revisions
+Idempotent run submission
+Event log sequencing
+Gopher policy evaluation
+Horowitz observability signals
+Mock HHL and VQE hybrid workloads
+Render deployment config
+Local development
+npm install
+npm run dev
+Client runs on http://localhost:5173 and proxies /api to http://localhost:3001.
+Production build
+npm run build
+npm start
+This builds the Vite client into dist/ and compiles the Express server into dist-server/.
+Main API routes
+GET /api/bootstrap
+GET /api/plans
+POST /api/plans
+POST /api/plans/:id/status
+POST /api/plans/:id/revise
+GET /api/runs
+POST /api/runs/:id/status
+POST /api/gateway/execute
+POST /api/policies/evaluate
+GET /api/events
+GET /api/observability/signals
+POST /api/reset
+Deployment
+Render
+This repo includes render.yaml. Connect the repo to Render and deploy as a Node web service. Render supports straightforward deployment of Node/Express apps, and Vite-based full-stack projects commonly use a build step that outputs the frontend and serves it from the Node process [web:372][web:369][web:380].
+GitHub Actions
+A CI workflow is included to run install, typecheck, and build on pushes and pull requests [file:1].
+Product doctrine
+Plans are promises, not prompts.
+Plan governance is distinct from run execution.
+Gateway admission is explicit.
+Event sequencing is append-only and ordered.
+Replay can be treated as first-class evidence.
+Policy and observability are core surfaces, not afterthoughts. https://github.com/reprewindai-dev/UACP v1 this is version 2 Quantum UACP v0
+Quantum UACP is a runnable full-stack prototype for hybrid quantum/classical workflow orchestration with three locked user-facing surfaces and six backend object families.
+Features
+Intent Console: Convert natural language commands into deterministic plans using Gemini 3 Flash.
+Execution Graph: Visualize the hybrid logic sequences.
+Ops / Control Plane: Monitor real-time runs, event logs, and observability signals.
+Deterministic Orchestration: Built on the philosophy that "God does not play dice with the Control Plane."
+Technical Stack
+Frontend: React 19, Tailwind CSS 4, Motion, Lucide Icons.
+Backend: Express 4, Node.js, WebSockets (ws).
+AI: Google Gemini API (via @google/genai).
+Data Structure
+Plans: ID, Intent, Revision, Graph (Nodes/Edges), Status.
+Runs: ID, PlanID, Status (Pending, Executing, Completed), Progress, Steps.
+Events: Append-only log of system actions.
+Signals: Real-time observability (Coherence, Latency, Policy Alignment).
+Research Context
+This prototype implements patterns for Universal Agency and Control Prototypes (UACP) as described in emerging quantum systems research (SSRN-adjacent signals). It ensures that while the quantum layer is probabilistic, the orchestration layer remains rigorous and policy-aligned. https://github.com/reprewindai-dev/uacpgemini/tree/main and now u are creating UACPV3-Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.” “There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.” “I am enough of an artist to draw freely upon my … u do 100 percent all the work
+bolt
+Add low-latency responses
+network_intelligence
+Enable high thinking
+spark
+Add Gemini intelligence
+google
+Use Google Search data

@@ -1,0 +1,90 @@
+import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
+import fetch from 'node-fetch';
+
+/**
+ * Official Veklom Nexus Protocol (VNP) SDK for JavaScript/TypeScript.
+ * Provides automated Ed25519 cryptographic signing and EvidencePack generation 
+ * for the cAPI 9-Phase Governed Execution Pipeline.
+ */
+export class VNPSdk {
+    private apiId: string;
+    private gatewayUrl: string;
+    private privateKey: crypto.KeyObject;
+
+    constructor(apiId: string, privateKeyPem: string, gatewayUrl: string = "https://api.veklom.com") {
+        this.apiId = apiId;
+        this.gatewayUrl = gatewayUrl.replace(/\/$/, "");
+        
+        // Load Ed25519 private key
+        this.privateKey = crypto.createPrivateKey({
+            key: privateKeyPem,
+            format: 'pem',
+            type: 'pkcs8'
+        });
+    }
+
+    private signPayload(payload: string): string {
+        const sign = crypto.createSign('sha512');
+        sign.update(payload);
+        sign.end();
+        const signature = sign.sign(this.privateKey);
+        return signature.toString('hex');
+    }
+
+    private generateNonce(): string {
+        return uuidv4().replace(/-/g, '');
+    }
+
+    /**
+     * Builds the secure EvidencePack required by cAPI Phase 1 (Identity & Security).
+     */
+    public buildEvidencePack(action: string, data: Record<string, any>): Record<string, any> {
+        const timestamp = Date.now();
+        const nonce = this.generateNonce();
+        
+        // Create deterministic payload string for signing
+        // Format: api_id|action|timestamp|nonce|data_hash
+        // We use stable stringification for data to ensure reproducible hashes
+        const dataStr = JSON.stringify(data, Object.keys(data).sort());
+        const dataHash = crypto.createHash('sha256').update(dataStr).digest('hex');
+        const signableString = `${this.apiId}|${action}|${timestamp}|${nonce}|${dataHash}`;
+        
+        const signature = this.signPayload(signableString);
+        
+        return {
+            api_id: this.apiId,
+            action: action,
+            data: data,
+            security: {
+                timestamp: timestamp,
+                nonce: nonce,
+                data_hash: dataHash,
+                signature: signature,
+                algo: "Ed25519"
+            }
+        };
+    }
+
+    /**
+     * Executes an action through the VNP cAPI gateway.
+     */
+    public async executeGovernedAction(action: string, data: Record<string, any>): Promise<any> {
+        const evidencePack = this.buildEvidencePack(action, data);
+        
+        const response = await fetch(`${this.gatewayUrl}/api/v1/capi/execute`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-VNP-API-ID': this.apiId
+            },
+            body: JSON.stringify(evidencePack)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`VNP cAPI Error: ${response.status} ${response.statusText}`);
+        }
+        
+        return await response.json();
+    }
+}

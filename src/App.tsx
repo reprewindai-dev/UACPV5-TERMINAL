@@ -495,7 +495,6 @@ export default function App() {
 
   return (
     <div className="shell">
-      <div className="scanline-fx"></div>
       {/* Titlebar */}
       <div className="titlebar">
         <div className="tb-inner">
