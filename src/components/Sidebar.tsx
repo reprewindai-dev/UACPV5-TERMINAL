@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Terminal, Activity, GitCommit, Users, Server, Radio, Database, ShieldAlert } from 'lucide-react';
+import { Terminal, Activity, GitCommit, Users, Server, Radio, Database, ShieldAlert, Zap, Network } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -17,12 +17,20 @@ interface SidebarProps {
 
 export default function Sidebar({ activeTab, setActiveTab, mcpHeartbeat, throughput, agentsCount }: SidebarProps) {
   const menuItems = [
-    { id: 'overview', name: 'Swarm Map', icon: Server, desc: '105 Node Swarm Active' },
-    { id: 'spine', name: 'Run Spine', icon: GitCommit, desc: 'PGL consensus trails' },
-    { id: 'runs', name: 'Runs Ledger', icon: Terminal, desc: 'Real-time telemetry' },
-    { id: 'committee', name: 'Council Matrix', icon: Users, desc: 'ArbiterOS consensus' },
+    { id: 'overview',   name: 'Swarm Map',       icon: Server,      desc: '105 Node Swarm Active' },
+    { id: 'spine',      name: 'Run Spine',       icon: GitCommit,   desc: 'PGL consensus trails' },
+    { id: 'runs',       name: 'Runs Ledger',     icon: Terminal,    desc: 'Real-time telemetry' },
+    { id: 'committee',  name: 'Council Matrix',  icon: Users,       desc: 'ArbiterOS consensus' },
+    { id: 'nexus',      name: 'Nexus Protocol',  icon: Network,     desc: 'Cross-cluster routing' },
+    { id: 'incidents',  name: 'VNP Incidents',   icon: ShieldAlert, desc: 'Slashing + evidence hashes' },
+    { id: 'terminal',   name: 'Quantum Terminal',icon: Zap,         desc: 'Autopilot agent shell' },
+    { id: 'mesh',       name: 'MCP Mesh',        icon: Network,     desc: 'Host-client topology' },
+    { id: 'tele',       name: 'Telemetry',       icon: Activity,    desc: 'Spectral & Genome' },
+    { id: 'paths',      name: 'Gladiator Engine',icon: GitCommit,   desc: 'Lineage & trajectory' },
+    { id: 'engine',     name: 'Engine Orchestrator',icon: Server,   desc: 'ROI & scaling' },
+    { id: 'hub',        name: 'Strategic Hub',   icon: Terminal,    desc: 'Consensus matrix' },
+    { id: 'dashboard',  name: 'Dashboard',       icon: Activity,    desc: 'Global overview' },
   ];
-
   return (
     <aside className="w-64 h-full border-r border-[#ffffff0a] bg-void-black flex flex-col justify-between shrink-0 select-none z-30">
       <div>
