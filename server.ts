@@ -136,7 +136,10 @@ async function startServer() {
   const getDeepSeek = (apiKey?: string) => getOpenAI(apiKey || process.env.DEEPSEEK_API_KEY, "https://api.deepseek.com");
 
   // ── Real Backend Proxy ──────────────────────────────────────────────────────
-  // All requests are forwarded server-side; no credentials ever reach the browser.
+  // All requests are forwarded server-side; credentials never reach the browser.
+  // Auth: VEKLOM BYOS uses "Authorization: Bearer <key>"
+  //       CAPPO uses "X-API-Key: <key>" (open /health, auth required on most routes)
+  //       GNOMLEDGER / LOCKERPHYCER: Bearer (same pattern as VEKLOM)
 
   const upstream = async (
     backendUrl: string | undefined,
@@ -144,45 +147,47 @@ async function startServer() {
     path: string,
     method: string,
     body: unknown,
-    res: express.Response
+    res: express.Response,
+    authStyle: "bearer" | "x-api-key" | "none" = "bearer"
   ) => {
     if (!backendUrl) {
       return res.status(503).json({
         error: "NOT_CONNECTED",
-        message: `Backend not configured. Set ${envVarName} in Replit Secrets.`,
+        message: `Backend not configured. Set ${envVarName} env var.`,
         hint: `Expected env var: ${envVarName}`
       });
     }
     try {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       const apiKey = process.env.OPERATOR_INTERNAL_API_KEY;
-      if (apiKey) headers["X-API-Key"] = apiKey;
-
+      if (apiKey) {
+        if (authStyle === "bearer")    headers["Authorization"] = `Bearer ${apiKey}`;
+        if (authStyle === "x-api-key") headers["X-API-Key"] = apiKey;
+        // "none" = open endpoint, no auth header
+      }
       const fetchRes = await fetch(`${backendUrl}${path}`, {
         method,
         headers,
         body: method !== "GET" && method !== "HEAD" ? JSON.stringify(body) : undefined,
       });
-      let data: any;
       const ct = fetchRes.headers.get("content-type") || "";
-      if (ct.includes("application/json")) {
-        data = await fetchRes.json();
-      } else {
-        data = { raw: await fetchRes.text() };
-      }
+      const data = ct.includes("application/json")
+        ? await fetchRes.json()
+        : { raw: await fetchRes.text() };
       res.status(fetchRes.status).json(data);
     } catch (err: any) {
       res.status(502).json({ error: "UPSTREAM_ERROR", message: err.message, backend: backendUrl });
     }
   };
 
-  const CAPPO  = () => process.env.CAPPO_BACKEND_URL;
-  const VEKLOM = () => process.env.VEKLOM_BACKEND_URL;
-  const GNOMLEDGER = () => process.env.GNOMLEDGER_URL;
+  const CAPPO       = () => process.env.CAPPO_BACKEND_URL;
+  const VEKLOM      = () => process.env.VEKLOM_BACKEND_URL;
+  const GNOMLEDGER  = () => process.env.GNOMLEDGER_URL;
+  const LOCKERPHYCER = () => process.env.LOCKERPHYCER_URL;
 
-  // MCP status — cappo-backend
-  app.get("/api/mcp/status", (req, res) => {
-    // Always include local MCP health alongside the upstream response
+  // ── MCP / operator status ────────────────────────────────────────────────
+  // Combines local MCP adapter state with CAPPO /health
+  app.get("/api/mcp/status", async (req, res) => {
     const local = {
       local_mcp: {
         connected: mcpStatus.connected,
@@ -192,88 +197,237 @@ async function startServer() {
         uptime: Math.floor((Date.now() - mcpStatus.startTime) / 1000),
       }
     };
-    if (!CAPPO()) {
-      return res.json({ ...local, upstream: "NOT_CONNECTED", hint: "Set CAPPO_BACKEND_URL" });
+    if (!CAPPO()) return res.json({ ...local, cappo: "NOT_CONNECTED" });
+    try {
+      const r = await fetch(`${CAPPO()}/health`);
+      const cappoHealth = r.ok ? await r.json() : { status: "error", code: r.status };
+      res.json({ ...local, cappo: cappoHealth });
+    } catch (e: any) {
+      res.json({ ...local, cappo: { status: "UPSTREAM_ERROR", message: e.message } });
     }
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/mcp/status", "GET", null, res);
   });
 
-  // General health — veklom-byos-backend
-  app.get("/api/status", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/monitoring/health", "GET", null, res));
+  // ── CAPPO — cappo.veklom.com ─────────────────────────────────────────────
+  // Open endpoints (no auth required by CAPPO)
+  app.get("/api/cappo/health",         (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/health",                        "GET",  null,     res, "none"));
+  app.get("/api/cappo/legacy/status",  (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/legacy/status",                 "GET",  null,     res, "none"));
+  app.get("/api/cappo/x402",           (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/.well-known/x402",              "GET",  null,     res, "none"));
 
-  app.get("/api/v1/monitoring/health", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/monitoring/health", "GET", null, res));
+  // VNP — Validated Network Providers
+  app.get("/api/cappo/vnp/methodology",(req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/methodology",           "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/vnp/metrics",    (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/metrics",               "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/vnp/leaderboard",(req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/leaderboard",           "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/vnp/validators", (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/validators",            "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/vnp/incidents",  (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/incidents",             "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/vnp/beacon",     (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/beacon/routes",         "GET",  null,     res, "x-api-key"));
+  app.post("/api/cappo/vnp/apis",      (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/apis",                  "POST", req.body, res, "x-api-key"));
 
-  app.get("/api/v1/security/stats", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/security/stats", "GET", null, res));
+  // Agents ledger
+  app.get("/api/cappo/agents",         (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/agents",                "GET",  null,     res, "x-api-key"));
+  app.post("/api/cappo/agents",        (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/agents",                "POST", req.body, res, "x-api-key"));
+  app.get("/api/cappo/agents/:id",     (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", `/api/v1/agents/${req.params.id}`,"GET", null,     res, "x-api-key"));
+  app.get("/api/cappo/ledger/events",  (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/ledger/events",         "GET",  null,     res, "x-api-key"));
 
-  app.post("/api/v1/privacy/detect-pii", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/privacy/detect-pii", "POST", req.body, res));
+  // Exec, audit, runs
+  app.post("/api/cappo/exec",          (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/exec",                      "POST", req.body, res, "x-api-key"));
+  app.post("/api/cappo/mcp/call",      (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/mcp/call",                    "POST", req.body, res, "x-api-key"));
+  app.get("/api/cappo/runs",           (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/runs",                     "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/audit/logs",     (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/audit-logs",               "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/audit/ledger",   (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/audit/ledger",             "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/audit/verify",   (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/audit/verify",             "GET",  null,     res, "x-api-key"));
 
-  app.post("/v1/exec", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/v1/exec", "POST", req.body, res));
+  // Governance v2
+  app.post("/api/cappo/governance/assess",         (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/governance/v2/assess",                      "POST", req.body, res, "x-api-key"));
+  app.get("/api/cappo/governance/risk/:agentId",   (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", `/v1/governance/v2/risk/${req.params.agentId}`,  "GET",  null,     res, "x-api-key"));
+  app.get("/api/cappo/governance/quarantine",      (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/governance/v2/quarantine",                  "GET",  null,     res, "x-api-key"));
 
-  app.post("/api/v1/auth/register", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/register", "POST", req.body, res));
+  // License
+  app.post("/api/cappo/license/issue",    (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/license/issue",    "POST", req.body, res, "x-api-key"));
+  app.post("/api/cappo/license/validate", (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/license/validate", "POST", req.body, res, "x-api-key"));
+  app.get("/api/cappo/license",           (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/license",          "GET",  null,     res, "x-api-key"));
 
-  app.post("/api/v1/cost/predict", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/cost/predict", "POST", req.body, res));
+  // Platform / benchmarks / GPC
+  app.get("/api/cappo/platform/pulse",        (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/platform/pulse",           "GET", null, res, "x-api-key"));
+  app.get("/api/cappo/benchmarks/leaderboard",(req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/benchmarks/leaderboard",   "GET", null, res, "x-api-key"));
+  app.get("/api/cappo/gpc/stats",             (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/gpc/stats",                "GET", null, res, "x-api-key"));
+  app.get("/api/cappo/pricing",               (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/pricing",                  "GET", null, res, "x-api-key"));
 
-  app.post("/api/v1/content-safety/scan", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/content-safety/scan", "POST", req.body, res));
+  // Legacy interlink pass-through (wildcard)
+  app.all("/api/cappo/interlink/*", (req, res) =>
+    upstream(CAPPO(), "CAPPO_BACKEND_URL", `/api/interlink/${req.params[0]}`, req.method, req.body, res, "x-api-key"));
 
-  // Climate — veklom-byos-backend
-  app.get("/api/climate/emissions", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/climate/emissions", "GET", null, res));
+  // ── VEKLOM BYOS — api.veklom.com ────────────────────────────────────────
+  // Auth: Authorization: Bearer <OPERATOR_INTERNAL_API_KEY>
 
-  app.get("/api/climate/regional", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/climate/regional", "GET", null, res));
+  // System / health
+  app.get("/api/status",                (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/sys/health",                   "GET", null, res));
+  app.get("/api/v1/monitoring/health",  (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/monitoring/health",  "GET", null, res));
+  app.get("/api/v1/sys/health",         (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/sys/health",                   "GET", null, res));
+  app.get("/api/v1/sys/gpu",            (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/sys/gpu",                      "GET", null, res));
+  app.get("/api/v1/sys/version",        (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/sys/version",                  "GET", null, res));
+  app.get("/api/v1/sys/control-plane-map", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/sys/control-plane-map",    "GET", null, res));
 
-  // PGL / GnomLedger
-  app.get("/api/pgl/genome", (req, res) =>
-    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/genome", "GET", null, res));
+  // Auth
+  app.post("/api/v1/auth/signup",       (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/signup",   "POST", req.body, res));
+  app.post("/api/v1/auth/signin",       (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/signin",   "POST", req.body, res));
+  app.post("/api/v1/auth/register",     (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/signup",   "POST", req.body, res)); // compat alias
+  app.get("/api/v1/auth/me",            (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/me",       "GET",  null,     res));
+  app.get("/api/v1/auth/api-keys",      (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/auth/api-keys", "GET",  null,     res));
 
-  app.get("/api/pgl/ledger", (req, res) =>
-    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/ledger", "GET", null, res));
+  // Agents
+  app.get("/api/v1/agents",             (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/",              "GET", null, res));
+  app.get("/api/v1/agents/law",         (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/law",           "GET", null, res));
+  app.get("/api/v1/agents/registry",    (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/registry",      "GET", null, res));
+  app.get("/api/v1/agents/fleet",       (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/fleet",         "GET", null, res));
+  app.get("/api/v1/agents/runs",        (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/runs",          "GET", null, res));
+  app.get("/api/v1/agents/signals",     (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/signals",       "GET", null, res));
+  app.get("/api/v1/agents/violations",  (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/violations",    "GET", null, res));
+  app.get("/api/v1/agents/guardrails",  (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/guardrails",    "GET", null, res));
+  app.get("/api/v1/agents/skills",      (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/skills",        "GET", null, res));
+  app.get("/api/v1/agents/decision-frames", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/decision-frames", "GET", null, res));
+  app.get("/api/v1/agents/monthly-report",  (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/monthly-report",  "GET", null, res));
+  app.get("/api/v1/agents/evidence",    (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/evidence",      "GET", null, res));
+  app.get("/api/v1/agents/hrm/audit",   (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/hrm/audit",     "GET", null, res));
+  app.post("/api/v1/agents/hrm/register",(req, res)=> upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agents/hrm/register",  "POST", req.body, res));
 
-  app.post("/api/pgl/commit", (req, res) =>
-    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/commit", "POST", req.body, res));
+  // Security / workspace
+  app.get("/api/v1/security/stats",          (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/security/alerts",    "GET", null, res));
+  app.get("/api/v1/workspace/overview",      (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/overview",            "GET", null, res));
+  app.get("/api/v1/workspace/overview/live", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/overview/live",       "GET", null, res));
+  app.get("/api/v1/workspace/observability", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/observability",       "GET", null, res));
+  app.get("/api/v1/workspace/billing",       (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/billing/breakdown",   "GET", null, res));
+  app.get("/api/v1/workspace/audit/logs",    (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/audit/logs",          "GET", null, res));
+  app.get("/api/v1/workspace/autonomous/decisions", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/autonomous/decisions", "GET", null, res));
 
-  app.get("/api/pgl/spdx", (req, res) =>
-    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/spdx", "GET", null, res));
+  // Terminal (VEKLOM remote shell)
+  app.get("/api/terminal/state",        (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/terminal/state",      "GET",  null,     res));
+  app.post("/api/terminal/telemetry",   (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/terminal/telemetry",  "POST", req.body, res));
+  app.post("/api/terminal/shell",       (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/terminal/shell",      "POST", req.body, res));
 
-  app.get("/api/pgl/cyclonedx", (req, res) =>
-    upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/cyclonedx", "GET", null, res));
+  // Genome (PGL on VEKLOM)
+  app.get("/api/v1/genome/certificates",(req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/genome/certificates", "GET", null, res));
+  app.get("/api/v1/genome/ledger",      (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/genome/ledger",       "GET", null, res));
+  app.get("/api/v1/genome/verify",      (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/genome/verify",       "GET", null, res));
+  app.get("/api/v1/genome/status",      (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/genome/status",       "GET", null, res));
 
-  // SEKED — veklom-byos-backend
-  app.get("/api/seked/status", (req, res) =>
-    upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/seked/status", "GET", null, res));
+  // Runs
+  app.post("/api/v1/runs",              (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/runs/",             "POST", req.body, res));
+  app.get("/api/v1/runs/:runId",        (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", `/api/v1/runs/${req.params.runId}`, "GET", null, res));
 
-  // UACP layers — cappo-backend
-  app.get("/api/uacp/layers", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/layers", "GET", null, res));
+  // Exec (VEKLOM native exec endpoint)
+  app.post("/v1/exec",                  (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/runs/", "POST", req.body, res));
 
-  app.get("/api/uacp/bounded", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/bounded", "GET", null, res));
+  // Copilot / agency
+  app.get("/api/v1/copilot/registry",         (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/copilot/registry",          "GET", null, res));
+  app.get("/api/v1/copilot/recent-decisions", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/copilot/recent-decisions",   "GET", null, res));
+  app.get("/api/v1/agency/overview",          (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agency/overview",            "GET", null, res));
+  app.get("/api/v1/agency/notifications",     (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/agency/notifications",       "GET", null, res));
 
-  app.get("/api/uacp/security", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/security", "GET", null, res));
+  // VNP stream (VEKLOM)
+  app.get("/api/v1/vnp/stream", (req, res) => {
+    // Proxy SSE from VEKLOM
+    const key = process.env.OPERATOR_INTERNAL_API_KEY;
+    const base = process.env.VEKLOM_BACKEND_URL;
+    if (!base) return res.status(503).json({ error: "NOT_CONNECTED" });
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    fetch(`${base}/api/v1/vnp/stream/sse`, { headers: key ? { "Authorization": `Bearer ${key}` } : {} })
+      .then(upstream => {
+        if (!upstream.body) return res.end();
+        const reader = (upstream.body as any).getReader();
+        const pump = () => reader.read().then(({ done, value }: any) => {
+          if (done) return res.end();
+          res.write(value);
+          pump();
+        }).catch(() => res.end());
+        pump();
+        req.on("close", () => reader.cancel());
+      })
+      .catch(() => res.end());
+  });
 
-  app.get("/api/uacp/governance", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/governance", "GET", null, res));
+  // Privacy / content safety (legacy compat aliases)
+  app.post("/api/v1/privacy/detect-pii",   (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/repogate/scan",    "POST", req.body, res));
+  app.post("/api/v1/content-safety/scan",  (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/repogate/seal",    "POST", req.body, res));
 
-  app.get("/api/uacp/roadmap", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/roadmap", "GET", null, res));
+  // SEKED (maps to evaluations on VEKLOM)
+  app.get("/api/seked/status",   (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/sys/health",                  "GET", null, res));
 
-  app.get("/api/uacp/hub/metrics", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/hub/metrics", "GET", null, res));
+  // ── GNOMLEDGER — gnomledger.veklom.com ──────────────────────────────────
+  // Currently 503; routes wired for when it recovers.
+  app.get("/api/pgl/genome",    (req, res) => upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/genome",    "GET",  null,     res));
+  app.get("/api/pgl/ledger",    (req, res) => upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/ledger",    "GET",  null,     res));
+  app.post("/api/pgl/commit",   (req, res) => upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/commit",    "POST", req.body, res));
+  app.get("/api/pgl/spdx",      (req, res) => upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/spdx",      "GET",  null,     res));
+  app.get("/api/pgl/cyclonedx", (req, res) => upstream(GNOMLEDGER(), "GNOMLEDGER_URL", "/api/pgl/cyclonedx", "GET",  null,     res));
 
-  app.get("/api/uacp/hub/ssrn", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/hub/ssrn", "GET", null, res));
+  // ── LOCKERPHYCER — lockerphycer.veklom.com ───────────────────────────────
+  // Full command-center / security hub (Veklom Sovereign AI Hub v1.0.0).
+  // Auth: Bearer. /health is open; all others require a workspace token.
 
-  app.get("/api/uacp/hub/observability", (req, res) =>
-    upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/uacp/hub/observability", "GET", null, res));
+  // Open
+  app.get("/api/locker/health",          (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/health",                                    "GET",  null,     res, "none"));
+  app.get("/api/locker/health/detailed", (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/health/detailed",                            "GET",  null,     res, "none"));
+
+  // Auth
+  app.post("/api/locker/auth/register",  (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/auth/register",                       "POST", req.body, res, "none"));
+  app.post("/api/locker/auth/login",     (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/auth/login",                          "POST", req.body, res, "none"));
+  app.get("/api/locker/auth/me",         (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/auth/me",                             "GET",  null,     res));
+
+  // Security
+  app.get("/api/locker/security/events", (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/security/events",                     "GET",  null,     res));
+  app.get("/api/locker/security/threats",(req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/security/threats/stats",               "GET",  null,     res));
+  app.get("/api/locker/security/controls",(req,res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/security/controls",                    "GET",  null,     res));
+  app.get("/api/locker/security/dashboard",(req,res)=> upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/security/dashboard",                   "GET",  null,     res));
+
+  // Monitoring
+  app.get("/api/locker/monitoring/metrics",  (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/monitoring/metrics",              "GET",  null,     res));
+  app.get("/api/locker/monitoring/health",   (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/monitoring/health",               "GET",  null,     res));
+  app.get("/api/locker/monitoring/activity", (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/monitoring/activity",             "GET",  null,     res));
+  app.get("/api/locker/monitoring/dashboard",(req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/monitoring/dashboard",            "GET",  null,     res));
+
+  // Command Center
+  app.get("/api/locker/cc/overview",         (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/overview",         "GET",  null,     res));
+  app.get("/api/locker/cc/workforce",        (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/workforce/status",  "GET",  null,     res));
+  app.get("/api/locker/cc/audit-log",        (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/audit-log",         "GET",  null,     res));
+  app.get("/api/locker/cc/live-users",       (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/live-users",        "GET",  null,     res));
+  app.get("/api/locker/cc/sessions",         (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/sessions",          "GET",  null,     res));
+  app.get("/api/locker/cc/activity-feed",    (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/activity-feed",     "GET",  null,     res));
+  app.get("/api/locker/cc/agents/fleet",     (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/agents/fleet",      "GET",  null,     res));
+  app.get("/api/locker/cc/governance",       (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/governance/compliance","GET",null,   res));
+  app.get("/api/locker/cc/operations/health",(req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/operations/health", "GET",  null,     res));
+  app.get("/api/locker/cc/operations/alerts",(req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/command-center/operations/alerts", "GET",  null,     res));
+
+  // Agents
+  app.get("/api/locker/agents/registry",  (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/registry",                    "GET",  null,     res));
+  app.get("/api/locker/agents/fleet",     (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/fleet",                        "GET",  null,     res));
+  app.get("/api/locker/agents/runs",      (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/runs",                         "GET",  null,     res));
+  app.get("/api/locker/agents/signals",   (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/signals",                      "GET",  null,     res));
+  app.get("/api/locker/agents/violations",(req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/violations",                   "GET",  null,     res));
+  app.get("/api/locker/agents/council",   (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/council/votes",                "GET",  null,     res));
+  app.get("/api/locker/agents/guardrails",(req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/guardrails",                   "GET",  null,     res));
+  app.get("/api/locker/agents/evidence",  (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/agents/evidence",                     "GET",  null,     res));
+
+  // Marketplace / GPC / billing
+  app.get("/api/locker/marketplace",      (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/marketplace/listings",                "GET",  null,     res));
+  app.get("/api/locker/marketplace/catalog",(req,res)=> upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/marketplace/catalog",                 "GET",  null,     res));
+  app.get("/api/locker/billing/pricing",  (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/billing/pricing",                     "GET",  null,     res));
+  app.get("/api/locker/gpc/stats",        (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/gpc/stats",                           "GET",  null,     res));
+  app.get("/api/locker/gpc/plans",        (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/gpc/plans",                           "GET",  null,     res));
+
+  // MCP relay through lockerphycer
+  app.post("/api/locker/mcp/call",        (req, res) => upstream(LOCKERPHYCER(), "LOCKERPHYCER_URL", "/api/v1/mcp/call",                            "POST", req.body, res));
+
+  // ── Legacy CAPPO-aliased UACP routes (kept for UI compat) ───────────────
+  app.get("/api/uacp/layers",      (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/gpc/stats",           "GET", null, res, "x-api-key"));
+  app.get("/api/uacp/bounded",     (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/api/v1/platform/pulse",      "GET", null, res, "x-api-key"));
+  app.get("/api/uacp/security",    (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/governance/v2/quarantine","GET", null, res, "x-api-key"));
+  app.get("/api/uacp/governance",  (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/governance/v2/assess",    "POST",{},   res, "x-api-key"));
+  app.get("/api/uacp/roadmap",     (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/methodology",         "GET", null, res, "x-api-key"));
+  app.get("/api/uacp/hub/metrics", (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/metrics",             "GET", null, res, "x-api-key"));
+  app.get("/api/uacp/hub/ssrn",    (req, res) => upstream(CAPPO(), "CAPPO_BACKEND_URL", "/v1/vnp/validators",          "GET", null, res, "x-api-key"));
+  app.get("/api/uacp/hub/observability", (req, res) => upstream(VEKLOM(), "VEKLOM_BACKEND_URL", "/api/v1/workspace/observability", "GET", null, res));
 
   // --- RARA Governance Logic ---
   const RARA_GOVERNANCE_GATE = (req: any, res: any, next: any) => {
