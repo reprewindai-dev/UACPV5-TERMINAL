@@ -1,0 +1,88 @@
+name: Deploy Terminal VNP to Server 2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/veklom-deploy
+          chmod 600 ~/.ssh/veklom-deploy
+          ssh-keyscan -H 87.99.154.166 >> ~/.ssh/known_hosts
+
+      - name: Pull, Build, and Swap on Server 2
+        run: |
+          ssh -i ~/.ssh/veklom-deploy root@87.99.154.166 << 'ENDSSH'
+          set -e
+          APP=/data/coolify/applications/uacpv5-terminal
+          CONTAINER_NAME=terminal-veklom
+          SHA="${{ github.sha }}"
+          IMAGE_TAG="${SHA:0:7}"
+          IMAGE=uacpv5-terminal:${IMAGE_TAG}
+
+          cd $APP
+          git fetch origin "$SHA"
+          git checkout --detach "$SHA"
+          test "$(git rev-parse HEAD)" = "$SHA"
+
+          echo "--- Building image ---"
+          docker build -t "$IMAGE" -t uacpv5-terminal:latest .
+
+          echo "--- Recreating terminal container ---"
+          docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
+          docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
+          
+          # Traefik configuration from Coolify
+          docker run -d \
+            --name "$CONTAINER_NAME" \
+            --network coolify \
+            --restart unless-stopped \
+            -e PORT=80 \
+            -w /app \
+            --label traefik.enable=true \
+            --label "traefik.http.routers.terminal-veklom-http.entrypoints=http" \
+            --label "traefik.http.routers.terminal-veklom-http.rule=Host(\`terminal.veklom.com\`)" \
+            --label "traefik.http.routers.terminal-veklom-https.entrypoints=https" \
+            --label "traefik.http.routers.terminal-veklom-https.rule=Host(\`terminal.veklom.com\`)" \
+            --label "traefik.http.routers.terminal-veklom-https.tls=true" \
+            --label "traefik.http.routers.terminal-veklom-https.tls.certresolver=letsencrypt" \
+            --label "traefik.http.services.terminal-veklom.loadbalancer.server.port=80" \
+            "$IMAGE" \
+            npm run start
+
+          echo "--- Waiting for container health ---"
+          sleep 5
+          STATUS=$(docker inspect "$CONTAINER_NAME" --format '{{.State.Status}}')
+          if [ "$STATUS" = "running" ]; then
+            echo "$CONTAINER_NAME is running successfully"
+          else
+            echo "Container failed to start. Status: $STATUS"
+            exit 1
+          fi
+          ENDSSH
+
+      - name: Verify Production Health
+        run: |
+          sleep 10
+          for i in 1 2 3 4; do
+            HTTP=$(curl -sk https://terminal.veklom.com -o /dev/null -w '%{http_code}')
+            if [ "$HTTP" = "200" ]; then
+              echo "terminal.veklom.com healthy (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i: got $HTTP, retrying..."
+            sleep 5
+          done
+          echo "HEALTH CHECK FAILED after 4 attempts"
+          exit 1
