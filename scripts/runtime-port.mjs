@@ -1,9 +1,11 @@
 import { spawn } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const CANONICAL_PORT = 80;
 const FORBIDDEN_PORTS = new Set([3000, 8000]);
 
-export function resolveRuntimePort(rawPort = process.env.PORT) {
+export function resolveRuntimePort(rawPort = process.env.PORT, nodeEnv = process.env.NODE_ENV) {
   const resolved = rawPort == null || String(rawPort).trim() === ""
     ? CANONICAL_PORT
     : Number.parseInt(String(rawPort), 10);
@@ -14,17 +16,22 @@ export function resolveRuntimePort(rawPort = process.env.PORT) {
   if (FORBIDDEN_PORTS.has(resolved)) {
     throw new Error(`PORT ${resolved} is forbidden for canonical Terminal; use ${CANONICAL_PORT}`);
   }
-  if (process.env.NODE_ENV === "production" && resolved !== CANONICAL_PORT) {
+  if (nodeEnv === "production" && resolved !== CANONICAL_PORT) {
     throw new Error(`Production Terminal must listen on canonical port ${CANONICAL_PORT}; received ${resolved}`);
   }
 
   return resolved;
 }
 
-const isDirectRun = process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href;
+const isDirectRun = process.argv[1]
+  && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
 
 if (isDirectRun) {
   try {
+    if (process.argv.includes("--production")) {
+      process.env.NODE_ENV = "production";
+    }
+
     const port = resolveRuntimePort();
     process.env.PORT = String(port);
 
