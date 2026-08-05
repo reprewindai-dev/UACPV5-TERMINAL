@@ -1,0 +1,87 @@
+# Instincts generated from https://github.com/reprewindai-dev/UACPV5-TERMINAL
+# Generated: 2026-08-05T03:15:33.350Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: UACPV5-TERMINAL-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/reprewindai-dev/UACPV5-TERMINAL
+---
+
+# UACPV5 TERMINAL Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: fix, test
+
+## Evidence
+
+- 5 commits analyzed
+- Detected conventional commit pattern
+- Examples: fix(runtime): enforce canonical Terminal port 80, test(runtime): prevent Terminal fallback to forbidden ports
+
+---
+id: UACPV5-TERMINAL-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/reprewindai-dev/UACPV5-TERMINAL
+---
+
+# UACPV5 TERMINAL Commit Length
+
+## Action
+
+Write moderate-length commit messages (~54 characters)
+
+## Evidence
+
+- Average commit message length: 54 chars
+- Based on 5 commits
+
+---
+id: UACPV5-TERMINAL-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/reprewindai-dev/UACPV5-TERMINAL
+---
+
+# UACPV5 TERMINAL Naming Files
+
+## Action
+
+Use kebab-case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: kebab-case
+
+---
+id: UACPV5-TERMINAL-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/reprewindai-dev/UACPV5-TERMINAL
+---
+
+# UACPV5 TERMINAL Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
