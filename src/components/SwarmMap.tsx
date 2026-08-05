@@ -270,6 +270,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
               onClick={() => setZoom(z => Math.min(2.5, z * 1.15))}
               className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
               title="Zoom In"
+              aria-label="Zoom In"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
@@ -277,6 +278,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
               onClick={() => setZoom(z => Math.max(0.4, z / 1.15))}
               className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
               title="Zoom Out"
+              aria-label="Zoom Out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
@@ -287,6 +289,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
               }}
               className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
               title="Reset View"
+              aria-label="Reset View"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -298,6 +301,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                   : 'bg-[#030303] text-white/60 hover:text-white border-white/15'
               }`}
               title="Toggle Live JSON Diagnostics [D]"
+              aria-label="Toggle Live JSON Diagnostics"
               id="btn-toggle-diagnostics-drawer"
             >
               <kbd className="bg-white/10 px-1 py-0.5 rounded text-[9px] border border-white/20 select-none">D</kbd>
@@ -504,6 +508,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                 <button
                   onClick={() => setSelectedAgentId(null)}
                   className="p-1 px-2 rounded-none hover:bg-white/5 text-white/50 hover:text-white border border-transparent hover:border-white/10"
+                  aria-label="Close agent details"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -644,6 +649,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                   onClick={() => setIsDiagnosticsOpen(false)}
                   className="p-1 px-2 rounded-none hover:bg-white/5 text-white/50 hover:text-white border border-transparent hover:border-white/10 cursor-pointer"
                   title="Close diagnostics [Esc]"
+                  aria-label="Close diagnostics"
                 >
                   <X className="w-4 h-4" />
                 </button>

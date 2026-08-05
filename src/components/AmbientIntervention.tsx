@@ -117,6 +117,7 @@ export default function AmbientIntervention() {
         {/* Close */}
         <button
           onClick={() => setIsOpen(false)}
+          aria-label="Close intervention"
           style={{
             position: "absolute",
             right: 16,
