@@ -570,11 +570,11 @@ export default function App() {
         {/* Terminal View */}
         <div className={`view ${activeView === 'terminal' ? 'active' : ''}`} id="v-terminal">
           <div className="chips-bar">
-            <div className="chip" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</div>
-            <div className="chip" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</div>
-            <div className="chip" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</div>
-            <div className="chip" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</div>
-            <div className="chip" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</div>
+            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
+            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
+            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
+            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
+            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
           </div>
           
           <div className="output" id="output" ref={outRef}>
@@ -636,13 +636,14 @@ export default function App() {
              <div className="typing-lbl">Cognitive Engine…</div>
           </div>
           <div className="input-bar">
-            <span className="i-pmt">$</span>
+            <label htmlFor="cmd" className="i-pmt">$</label>
             <input 
               className="i-field" id="cmd" type="text" placeholder="Enter command…"
               value={inputVal} onChange={e => setInputVal(e.target.value)} onKeyDown={handleKeyDown}
+              aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
             />
-            <button className="run-btn" onClick={submitCmd}>RUN</button>
+            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
           </div>
         </div>
 
