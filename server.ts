@@ -160,6 +160,13 @@ async function startServer() {
     try {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       const apiKey = process.env.OPERATOR_INTERNAL_API_KEY;
+      
+      const req = res.req;
+      const workspaceId = (req && req.headers && req.headers["x-workspace-id"]) || process.env.WORKSPACE_ID;
+      if (workspaceId) {
+        headers["X-Workspace-ID"] = workspaceId as string;
+      }
+      
       if (apiKey) {
         if (authStyle === "bearer")    headers["Authorization"] = `Bearer ${apiKey}`;
         if (authStyle === "x-api-key") headers["X-API-Key"] = apiKey;
