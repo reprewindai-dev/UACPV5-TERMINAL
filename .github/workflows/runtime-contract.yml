@@ -1,0 +1,49 @@
+name: Terminal Runtime Contract
+
+on:
+  pull_request:
+    paths:
+      - 'server.ts'
+      - 'scripts/runtime-port.mjs'
+      - 'scripts/runtime-port.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/runtime-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'server.ts'
+      - 'scripts/runtime-port.mjs'
+      - 'scripts/runtime-port.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/runtime-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Verify canonical runtime port
+        run: npm run test:runtime-port
+
+      - name: Type-check
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
