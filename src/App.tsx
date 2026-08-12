@@ -1027,43 +1027,78 @@ export default function App() {
       </div>
 
       {/* Bottom Nav */}
-      <div className="bnav">
-        <div className={`bt ${activeView === 'terminal' ? 'active' : ''}`} onClick={() => setActiveView('terminal')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <div className="bnav" role="tablist">
+        <button
+          role="tab"
+          aria-selected={activeView === 'terminal'}
+          className={`bt ${activeView === 'terminal' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('terminal')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
             <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
           </svg>Terminal
-        </div>
-        <div className={`bt ${activeView === 'mesh' ? 'active' : ''}`} onClick={() => setActiveView('mesh')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeView === 'mesh'}
+          className={`bt ${activeView === 'mesh' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('mesh')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
             <circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
             <line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="5" y2="17"/><line x1="12" y1="12" x2="19" y2="17"/>
           </svg>Mesh
-        </div>
-        <div className={`bt ${activeView === 'tele' ? 'active' : ''}`} onClick={() => setActiveView('tele')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeView === 'tele'}
+          className={`bt ${activeView === 'tele' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('tele')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>Telemetry
-        </div>
-        <div className={`bt ${activeView === 'paths' ? 'active' : ''}`} onClick={() => setActiveView('paths')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeView === 'paths'}
+          className={`bt ${activeView === 'paths' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('paths')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
             <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
           </svg>Paths
-        </div>
-        <div className={`bt ${activeView === 'engine' ? 'active' : ''}`} onClick={() => setActiveView('engine')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeView === 'engine'}
+          className={`bt ${activeView === 'engine' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('engine')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
              <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
           </svg>Engine
-        </div>
-        <div className={`bt ${activeView === 'hub' ? 'active' : ''}`} onClick={() => setActiveView('hub')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeView === 'hub'}
+          className={`bt ${activeView === 'hub' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('hub')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
              <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
           </svg>Hub
-        </div>
-        <div className={`bt ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveView('dashboard')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeView === 'dashboard'}
+          className={`bt ${activeView === 'dashboard' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
+          onClick={() => setActiveView('dashboard')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
           </svg>Control Plane
-        </div>
+        </button>
       </div>
     </div>
   );
