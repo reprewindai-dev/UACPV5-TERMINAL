@@ -1,3 +1,3 @@
-## 2024-08-05 - Missing ARIA Labels on Icon-Only Buttons
-**Learning:** Found multiple instances of icon-only buttons (like map controls and close buttons) missing `aria-label` attributes across different components, which hinders screen reader accessibility.
-**Action:** Add `aria-label` to all icon-only buttons to ensure their purpose is communicated to assistive technologies.
+## 2026-08-15 - Bottom Navigation Keyboard Accessibility
+**Learning:** Custom navigation bars built with `<div>` elements completely block keyboard users from navigating the application. Converting them to semantic `<button role="tab">` elements instantly restores keyboard navigability and ensures proper screen reader announcement.
+**Action:** Always use native semantic elements like `<button>` or `<a>` for interactive controls, and utilize `focus-visible` utility classes to provide clear keyboard focus indicators without penalizing mouse users.
