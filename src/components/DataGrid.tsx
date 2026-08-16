@@ -95,7 +95,7 @@ export default function DataGrid({ runs }: DataGridProps) {
             <Search className="w-3.5 h-3.5 text-white/35" />
             <input
               type="text"
-              aria-label="Search execution runs"
+              aria-label={gridTab === 'runs' ? "Search execution runs" : "Query evidence registry"}
               placeholder={gridTab === 'runs' ? "Search execution runs..." : "Query evidence registry..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
