@@ -167,10 +167,11 @@ export default function LiveTelemetry({ logs, metrics, onTriggerManualOverride }
               </div>
 
               <div>
-                <label className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
+                <label htmlFor="governance-policy" className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
                   Governance Policy Sandbox
                 </label>
                 <select
+                  id="governance-policy"
                   value={overridePolicy}
                   onChange={(e) => setOverridePolicy(e.target.value)}
                   className="w-full bg-black border border-white/15 rounded-none p-1.5 text-xs text-white/80 focus:outline-none"
