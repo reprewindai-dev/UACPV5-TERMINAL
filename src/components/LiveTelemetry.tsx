@@ -152,10 +152,11 @@ export default function LiveTelemetry({ logs, metrics, onTriggerManualOverride }
             
             <form onSubmit={handleManualTrigger} className="space-y-3">
               <div>
-                <label className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
+                <label htmlFor="override-intent" className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
                   Manual Swarm Execution Intent
                 </label>
                 <input
+                  id="override-intent"
                   type="text"
                   placeholder="E.g., Flush secondary caches and reboot root VM."
                   value={overrideIntent}

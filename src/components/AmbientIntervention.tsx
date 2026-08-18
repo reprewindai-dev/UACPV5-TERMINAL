@@ -208,6 +208,7 @@ export default function AmbientIntervention() {
         {eventData?.type === "MISSING_KEY" && (
           <form onSubmit={handleAction}>
             <label
+              htmlFor="api-key-input"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -222,6 +223,7 @@ export default function AmbientIntervention() {
               Provider API Key
             </label>
             <input
+              id="api-key-input"
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
