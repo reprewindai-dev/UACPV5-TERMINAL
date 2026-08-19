@@ -226,6 +226,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             <Search className="w-3.5 h-3.5 text-white/40" />
             <input
               type="text"
+              aria-label="Query Swarm Telemetry"
               placeholder="Query Swarm Telemetry..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
