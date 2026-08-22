@@ -109,7 +109,7 @@ export default function RunSpine({ runs, selectedRunId, onSelectRun }: RunSpineP
               <button
                 key={run.id}
                 onClick={() => onSelectRun(run.id)}
-                className={`w-full p-3.5 text-left transition-all duration-200 block border-l-2 relative cursor-pointer ${
+                className={`w-full p-3.5 text-left transition-all duration-200 block border-l-2 relative cursor-pointer focus-visible:outline-none focus-visible:bg-white/[0.05] ${
                   isSel ? 'bg-white/[0.03] border-l-electric-cyan' : 'border-l-transparent hover:bg-white/[0.015]'
                 }`}
                 style={{ contentVisibility: 'auto' }}
@@ -158,8 +158,9 @@ export default function RunSpine({ runs, selectedRunId, onSelectRun }: RunSpineP
                   setCopiedId(true);
                   setTimeout(() => setCopiedId(false), 1500);
                 }}
-                className="opacity-0 group-hover/id:opacity-100 transition-opacity duration-200 bg-white/5 hover:bg-white/10 border border-white/10 px-1.5 py-0.5 text-[8px] tracking-widest text-white/80 uppercase font-mono cursor-pointer flex items-center gap-1 select-none"
+                className="opacity-0 group-hover/id:opacity-100 transition-opacity duration-200 bg-white/5 hover:bg-white/10 border border-white/10 px-1.5 py-0.5 text-[8px] tracking-widest text-white/80 uppercase font-mono cursor-pointer flex items-center gap-1 select-none focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:outline-none focus-visible:opacity-100"
                 title="Copy Run ID"
+                aria-label="Copy Run ID"
               >
                 <Copy className="w-2.5 h-2.5" />
                 Copy ID

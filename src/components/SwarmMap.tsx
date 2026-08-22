@@ -268,7 +268,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
           <div className="flex items-center gap-1">
             <button
               onClick={() => setZoom(z => Math.min(2.5, z * 1.15))}
-              className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
+              className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:outline-none"
               title="Zoom In"
               aria-label="Zoom In"
             >
@@ -276,7 +276,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             </button>
             <button
               onClick={() => setZoom(z => Math.max(0.4, z / 1.15))}
-              className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
+              className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:outline-none"
               title="Zoom Out"
               aria-label="Zoom Out"
             >
@@ -287,7 +287,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                 setZoom(1.0);
                 centerMap();
               }}
-              className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
+              className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:outline-none"
               title="Reset View"
               aria-label="Reset View"
             >
@@ -295,7 +295,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             </button>
             <button
               onClick={() => setIsDiagnosticsOpen(prev => !prev)}
-              className={`p-1 px-2.5 rounded-none border text-[10px] font-mono tracking-wider font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`p-1 px-2.5 rounded-none border text-[10px] font-mono tracking-wider font-bold transition-all cursor-pointer flex items-center gap-1.5 focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:outline-none ${
                 isDiagnosticsOpen 
                   ? 'bg-electric-cyan text-void-black border-electric-cyan' 
                   : 'bg-[#030303] text-white/60 hover:text-white border-white/15'
@@ -507,7 +507,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                 </div>
                 <button
                   onClick={() => setSelectedAgentId(null)}
-                  className="p-1 px-2 rounded-none hover:bg-white/5 text-white/50 hover:text-white border border-transparent hover:border-white/10"
+                  className="p-1 px-2 rounded-none hover:bg-white/5 text-white/50 hover:text-white border border-transparent hover:border-white/10 focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:outline-none"
                   aria-label="Close agent details"
                 >
                   <X className="w-4 h-4" />
