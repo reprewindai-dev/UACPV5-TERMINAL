@@ -226,6 +226,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             <Search className="w-3.5 h-3.5 text-white/40" />
             <input
               type="text"
+              aria-label="Search Swarm Telemetry"
               placeholder="Query Swarm Telemetry..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -253,6 +254,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
           <div className="flex items-center gap-1.5">
             <span className="text-white/40">STATE:</span>
             <select
+              aria-label="Filter by state"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="bg-[#030303] border border-white/15 text-white/80 rounded-none px-2 py-0.5 text-[11px] focus:outline-none"

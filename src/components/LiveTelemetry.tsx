@@ -152,10 +152,11 @@ export default function LiveTelemetry({ logs, metrics, onTriggerManualOverride }
             
             <form onSubmit={handleManualTrigger} className="space-y-3">
               <div>
-                <label className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
+                <label htmlFor="manual-intent" className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
                   Manual Swarm Execution Intent
                 </label>
                 <input
+                  id="manual-intent"
                   type="text"
                   placeholder="E.g., Flush secondary caches and reboot root VM."
                   value={overrideIntent}
@@ -166,10 +167,11 @@ export default function LiveTelemetry({ logs, metrics, onTriggerManualOverride }
               </div>
 
               <div>
-                <label className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
+                <label htmlFor="governance-policy" className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">
                   Governance Policy Sandbox
                 </label>
                 <select
+                  id="governance-policy"
                   value={overridePolicy}
                   onChange={(e) => setOverridePolicy(e.target.value)}
                   className="w-full bg-black border border-white/15 rounded-none p-1.5 text-xs text-white/80 focus:outline-none"

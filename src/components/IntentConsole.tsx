@@ -41,6 +41,7 @@ export const IntentConsole: React.FC<IntentConsoleProps> = ({
         </div>
         <div className="flex gap-2">
            <select 
+             aria-label="Select provider"
              value={selectedProvider}
              onChange={(e) => onProviderChange(e.target.value as LLMProvider)}
              className="bg-black/60 border border-white/10 rounded-lg px-2 py-1 text-[10px] font-mono text-cyan-400 focus:outline-none focus:border-cyan-400/50"
@@ -55,6 +56,7 @@ export const IntentConsole: React.FC<IntentConsoleProps> = ({
       <div className="relative group">
         <textarea 
           ref={textareaRef}
+          aria-label="Strategic intent input"
           placeholder="State your orchestration intent (e.g., 'Verify satellite coverage for Amazon basin')..."
           className="w-full h-32 bg-black/40 border border-white/10 rounded-xl p-4 text-sm font-mono text-white/90 placeholder:text-white/10 focus:outline-none focus:border-cyan-400/50 transition-all resize-none"
           onKeyDown={(e) => {
