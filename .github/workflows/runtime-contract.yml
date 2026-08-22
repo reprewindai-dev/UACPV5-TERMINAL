@@ -6,6 +6,8 @@ on:
       - 'server.ts'
       - 'scripts/runtime-port.mjs'
       - 'scripts/runtime-port.test.mjs'
+      - 'tests/ambient-intervention-truth.test.mjs'
+      - 'src/components/AmbientIntervention.tsx'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/runtime-contract.yml'
@@ -15,6 +17,8 @@ on:
       - 'server.ts'
       - 'scripts/runtime-port.mjs'
       - 'scripts/runtime-port.test.mjs'
+      - 'tests/ambient-intervention-truth.test.mjs'
+      - 'src/components/AmbientIntervention.tsx'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/runtime-contract.yml'
@@ -41,6 +45,9 @@ jobs:
 
       - name: Verify canonical runtime port
         run: npm run test:runtime-port
+
+      - name: Verify intervention truth boundary
+        run: npm run test:intervention-truth
 
       - name: Type-check
         run: npm run lint
