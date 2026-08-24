@@ -8,3 +8,7 @@
 ## 2026-08-14 - Form Input Labels & Accessible Inputs
 **Learning:** Visible text labels and context aren't enough for screen readers; they need explicit associations (htmlFor/id) or aria-label attributes when isolated.
 **Action:** Always link visible labels to inputs using htmlFor and id, and explicitly add aria-labels to standalone inputs or selects (e.g. search boxes, filter dropdowns).
+
+## 2026-08-24 - Explicit Form Label Association
+**Learning:** Found multiple instances where visible text adjacent to form inputs (like textareas and selects) were rendered as `<span>` or unassociated `<label>` elements, preventing screen readers from programmatically associating the text with the input control.
+**Action:** Always use `<label>` elements with an `htmlFor` attribute matching the input's `id` to explicitly associate visible labels with their respective form controls.
