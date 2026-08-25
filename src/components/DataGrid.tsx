@@ -146,7 +146,11 @@ export default function DataGrid({ runs }: DataGridProps) {
             {/* List Body */}
             <div className="divide-y divide-white/[0.03]">
               {visibleRunsSlice.length === 0 ? (
-                <div className="text-center py-10 text-white/20 uppercase font-bold italic">No matching running transactions inside proof pool.</div>
+                <div className="flex flex-col items-center justify-center py-16 text-white/40">
+                  <Info className="w-8 h-8 mb-3 opacity-50 text-white" />
+                  <div className="text-[11px] uppercase tracking-widest font-bold">No runs found</div>
+                  <div className="text-[10px] mt-1 text-white/30">Try adjusting your search filters or policy constraints.</div>
+                </div>
               ) : (
                 visibleRunsSlice.map((run) => {
                   let badgeStyle = 'text-matrix-emerald border-matrix-emerald/35 bg-matrix-emerald/10';
@@ -219,7 +223,13 @@ export default function DataGrid({ runs }: DataGridProps) {
 
             {/* List Body */}
             <div className="divide-y divide-white/[0.03]">
-              {visibleRunsSlice.map((run, idx) => {
+              {visibleRunsSlice.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 text-white/40">
+                  <Info className="w-8 h-8 mb-3 opacity-50 text-white" />
+                  <div className="text-[11px] uppercase tracking-widest font-bold">No evidence records found</div>
+                  <div className="text-[10px] mt-1 text-white/30">Adjust your search query to find matching transactions.</div>
+                </div>
+              ) : visibleRunsSlice.map((run, idx) => {
                 return (
                   <div
                     key={`evidence-${run.id}`}

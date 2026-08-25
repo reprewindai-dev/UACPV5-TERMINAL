@@ -8,3 +8,7 @@
 ## 2026-08-14 - Form Input Labels & Accessible Inputs
 **Learning:** Visible text labels and context aren't enough for screen readers; they need explicit associations (htmlFor/id) or aria-label attributes when isolated.
 **Action:** Always link visible labels to inputs using htmlFor and id, and explicitly add aria-labels to standalone inputs or selects (e.g. search boxes, filter dropdowns).
+
+## 2026-08-25 - DataGrid Empty States
+**Learning:** Adding empty states inside a grid context (like `visibleRunsSlice.length === 0`) using a styled empty state layout greatly enhances user feedback over just rendering an empty table, especially when multiple filtered lists are toggled dynamically.
+**Action:** When working on grid, list, or table views in this app, ensure there is a clear, actionable empty state indicating why results are missing (e.g. "Adjust your search query").
