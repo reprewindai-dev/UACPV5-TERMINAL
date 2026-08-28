@@ -6,9 +6,12 @@ const CANONICAL_PORT = 80;
 const FORBIDDEN_PORTS = new Set([3000, 8000]);
 
 export function resolveRuntimePort(rawPort = process.env.PORT, nodeEnv = process.env.NODE_ENV) {
-  const resolved = rawPort == null || String(rawPort).trim() === ""
-    ? CANONICAL_PORT
-    : Number.parseInt(String(rawPort), 10);
+  const portText = rawPort == null ? "" : String(rawPort).trim();
+  if (portText !== "" && !/^\d+$/.test(portText)) {
+    throw new Error(`PORT must be an integer between 1 and 65535; received ${rawPort}`);
+  }
+
+  const resolved = portText === "" ? CANONICAL_PORT : Number(portText);
 
   if (!Number.isInteger(resolved) || resolved < 1 || resolved > 65535) {
     throw new Error(`PORT must be an integer between 1 and 65535; received ${rawPort}`);
