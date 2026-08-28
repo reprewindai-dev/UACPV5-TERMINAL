@@ -73,7 +73,7 @@ export const IntentConsole: React.FC<IntentConsoleProps> = ({
             <button 
                 disabled={isLocked}
                 onClick={handleDispatch}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs uppercase font-bold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs uppercase font-bold transition-all focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none ${
                     isLocked ? 'bg-white/5 text-white/20 cursor-not-allowed' : 'bg-cyan-400 text-black hover:bg-cyan-300'
                 }`}
             >
