@@ -638,12 +638,19 @@ export default function App() {
           <div className="input-bar">
             <label htmlFor="cmd" className="i-pmt">$</label>
             <input 
-              className="i-field" id="cmd" type="text" placeholder="Enter command…"
+              className="i-field disabled:opacity-50 disabled:cursor-not-allowed" id="cmd" type="text" placeholder="Enter command…"
               value={inputVal} onChange={e => setInputVal(e.target.value)} onKeyDown={handleKeyDown}
               aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
+              disabled={isTyping}
             />
-            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
+            <button
+              className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={submitCmd}
+              disabled={!inputVal.trim() || isTyping}
+            >
+              RUN
+            </button>
           </div>
         </div>
 
