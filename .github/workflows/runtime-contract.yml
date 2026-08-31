@@ -10,6 +10,7 @@ on:
       - 'src/components/AmbientIntervention.tsx'
       - 'package.json'
       - 'package-lock.json'
+      - '.github/workflows/deploy.yml'
       - '.github/workflows/runtime-contract.yml'
   push:
     branches: [main]
@@ -21,6 +22,7 @@ on:
       - 'src/components/AmbientIntervention.tsx'
       - 'package.json'
       - 'package-lock.json'
+      - '.github/workflows/deploy.yml'
       - '.github/workflows/runtime-contract.yml'
 
 permissions:
