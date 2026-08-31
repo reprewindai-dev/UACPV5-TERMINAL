@@ -12,6 +12,7 @@ jobs:
     env:
       DEPLOY_HOST: ${{ secrets.TERMINAL_DEPLOY_HOST }}
       DEPLOY_USER: ${{ secrets.TERMINAL_DEPLOY_USER }}
+      DEPLOY_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
       DEPLOY_PATH: ${{ vars.TERMINAL_DEPLOY_PATH }}
       DOCKER_NETWORK: ${{ vars.TERMINAL_DOCKER_NETWORK }}
 
@@ -25,15 +26,15 @@ jobs:
           set -euo pipefail
           test -n "$DEPLOY_HOST" || { echo "TERMINAL_DEPLOY_HOST is not configured"; exit 1; }
           test -n "$DEPLOY_USER" || { echo "TERMINAL_DEPLOY_USER is not configured"; exit 1; }
+          test -n "$DEPLOY_SSH_KEY" || { echo "HETZNER_SSH_KEY is not configured"; exit 1; }
           test -n "$DEPLOY_PATH" || { echo "TERMINAL_DEPLOY_PATH is not configured"; exit 1; }
           test -n "$DOCKER_NETWORK" || { echo "TERMINAL_DOCKER_NETWORK is not configured"; exit 1; }
-          test -n "${{ secrets.HETZNER_SSH_KEY }}" || { echo "HETZNER_SSH_KEY is not configured"; exit 1; }
 
       - name: Setup SSH
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
-          echo "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/veklom-deploy
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/veklom-deploy
           chmod 600 ~/.ssh/veklom-deploy
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
