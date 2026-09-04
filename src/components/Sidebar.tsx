@@ -64,6 +64,7 @@ export default function Sidebar({ activeTab, setActiveTab, mcpHeartbeat, through
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
+                aria-label={item.name}
                 className={`w-full group relative flex items-center gap-3.5 px-3 py-2.5 rounded-none text-left transition-all duration-300 pointer border border-transparent`}
                 style={{ contentVisibility: 'auto' }}
               >
