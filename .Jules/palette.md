@@ -11,3 +11,6 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2024-05-24 - Dynamic Navigation ARIA Labels
+**Learning:** When generating interactive navigation elements dynamically from an array, standard text labels might not always be interpreted correctly by screen readers if their visual presentation involves complex nested layouts. Explicit `aria-label` attributes are often necessary even if visual text exists within the button's DOM tree, to ensure clear, high-level context.
+**Action:** Always add explicit `aria-label`s on navigation buttons mapped from arrays, particularly in sidebars and toolbars.
