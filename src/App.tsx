@@ -643,7 +643,15 @@ export default function App() {
               aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
             />
-            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
+            <button
+              className="run-btn disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none"
+              onClick={submitCmd}
+              disabled={isTyping || !inputVal.trim()}
+              title={!inputVal.trim() ? "Enter a command to run" : isTyping ? "Command is running..." : "Run command"}
+              aria-label={!inputVal.trim() ? "Enter a command to run" : isTyping ? "Command is running" : "Run command"}
+            >
+              {isTyping ? "..." : "RUN"}
+            </button>
           </div>
         </div>
 
