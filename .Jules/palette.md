@@ -11,3 +11,7 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+
+## 2024-05-18 - [Add feedback and loading state to run buttons]
+**Learning:** Adding a disabled state and a loading state to input forms and submission buttons greatly enhances the UX. Users need to know when their submission is processing to avoid duplicate submissions, and preventing empty submissions improves accessibility by blocking invalid input actions.
+**Action:** When a button triggers an async task or requires valid input, always add `disabled` logic using appropriate CSS classes (`disabled:opacity-50`, `disabled:cursor-not-allowed`) and update the button's content to reflect the loading status visually.
