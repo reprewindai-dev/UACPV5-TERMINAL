@@ -11,3 +11,7 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+
+## 2024-05-24 - Disabled Run Button States
+**Learning:** Terminal/command inputs lacking disabled states during async processing lead to ambiguous UX where users aren't sure if their click registered, resulting in double-clicks or confusion.
+**Action:** When working with simulated terminal or chat inputs, always disable the submit button and provide a title tooltip indicating processing state to improve interaction clarity.
