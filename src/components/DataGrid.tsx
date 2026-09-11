@@ -72,7 +72,7 @@ export default function DataGrid({ runs }: DataGridProps) {
                 setGridTab('runs');
                 setSearch('');
               }}
-              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer ${
+              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none focus-visible:-outline-offset-2 ${
                 gridTab === 'runs' ? 'bg-electric-cyan text-void-black font-extrabold' : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -83,7 +83,7 @@ export default function DataGrid({ runs }: DataGridProps) {
                 setGridTab('evidence');
                 setSearch('');
               }}
-              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer ${
+              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none focus-visible:-outline-offset-2 ${
                 gridTab === 'evidence' ? 'bg-electric-cyan text-void-black font-extrabold' : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -112,7 +112,7 @@ export default function DataGrid({ runs }: DataGridProps) {
                 <button
                   key={st}
                   onClick={() => setPolicyFilter(st as any)}
-                  className={`px-2.5 py-1 font-bold uppercase transition-colors rounded-none cursor-pointer ${
+                  className={`px-2.5 py-1 font-bold uppercase transition-colors rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none focus-visible:-outline-offset-2 ${
                     policyFilter === st ? 'bg-white/10 text-white font-extrabold' : 'bg-transparent text-white/50 hover:text-white hover:bg-white/5'
                   }`}
                 >
