@@ -64,7 +64,7 @@ export default function Sidebar({ activeTab, setActiveTab, mcpHeartbeat, through
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full group relative flex items-center gap-3.5 px-3 py-2.5 rounded-none text-left transition-all duration-300 pointer border border-transparent`}
+                className={`w-full group relative flex items-center gap-3.5 px-3 py-2.5 rounded-none text-left transition-all duration-300 pointer border border-transparent focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none focus-visible:-outline-offset-2`}
                 style={{ contentVisibility: 'auto' }}
               >
                 {/* Framer motion background block */}

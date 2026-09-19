@@ -11,3 +11,6 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2024-09-19 - Ensure Focus Ring Visibility in Tab Groups
+**Learning:** When adding focus rings to tightly packed element groups (like segment controls or tab lists), the default `box-shadow` rendered by Tailwind's `ring` utility can be visually obscured by adjacent elements rendering over it.
+**Action:** Use `relative z-10` on active/focused elements within tightly coupled groups to ensure the focus ring renders above adjacent peers.
