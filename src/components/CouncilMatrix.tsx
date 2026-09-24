@@ -224,13 +224,14 @@ export default function CouncilMatrix({ delegates, onVotePropose }: CouncilMatri
 
               <form onSubmit={handleProposeMotion} className="space-y-3 font-mono">
                 <div>
-                  <label className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">PROPOSAL DESCRIPTION</label>
+                  <label htmlFor="proposal-description" className="text-[9px] uppercase tracking-wider text-white/30 block mb-1">PROPOSAL DESCRIPTION</label>
                   <textarea
+                    id="proposal-description"
                     rows={3}
                     placeholder="E.g., Allocate Swarm nodes to optimize cross-chain gas schedules."
                     value={proposedMotionText}
                     onChange={(e) => setProposedMotionText(e.target.value)}
-                    className="w-full bg-void-black border border-white/[0.08] rounded-none p-2 text-xs text-white/90 placeholder-white/25 focus:border-electric-cyan/40 focus:outline-none focus:ring-1 focus:ring-electric-cyan/35 leading-normal"
+                    className="w-full bg-void-black border border-white/[0.08] rounded-none p-2 text-xs text-white/90 placeholder-white/25 focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none focus:border-electric-cyan/40 focus:outline-none focus:ring-1 focus:ring-electric-cyan/35 leading-normal"
                     required
                   />
                 </div>

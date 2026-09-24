@@ -11,3 +11,10 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2024-09-24 - Form Field Programmatic Association
+**Learning:** Adding explicit programmatic links via `id` and `htmlFor` between form inputs and text labels ensures proper functionality for assistive technologies. We should not assume adjacent elements are sufficiently linked.
+**Action:** When inspecting forms, ensure `label` elements map explicitly to inputs using matching `htmlFor`/`id` values.
+
+## 2024-09-24 - Visual Feedback for Keyboard Navigation
+**Learning:** Heavy reliance on mouse interactions can lead to neglecting keyboard users. Standard `focus` outlines are sometimes suppressed, requiring explicit `focus-visible` styling to maintain aesthetic cohesion while providing critical navigation cues.
+**Action:** Add explicit `focus-visible:ring-2` styling on interactive elements (buttons, inputs, textareas) consistently across components.
