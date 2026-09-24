@@ -44,11 +44,11 @@ export const ProbabilityMatrix: React.FC<ProbabilityMatrixProps> = ({ revision, 
       </div>
 
       <div className="flex gap-4">
-        <button className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
+        <button className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none">
             <Layers size={14} className="text-white/40 group-hover:text-cyan-400 transition-colors" />
             <span className="text-[10px] font-mono uppercase text-white/60">Compile Plan</span>
         </button>
-        <button className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
+        <button className="flex-1 flex items-center justify-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none">
             <FileJson size={14} className="text-white/40 group-hover:text-purple-400 transition-colors" />
             <span className="text-[10px] font-mono uppercase text-white/60">Export Schema</span>
         </button>
