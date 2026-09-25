@@ -11,3 +11,6 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2024-05-18 - Always specify button types
+**Learning:** Always explicitly include `type="button"` on `<button>` elements that are not part of a form, especially when adding new UI actions like "clear search". This prevents unintended form submissions if the surrounding DOM structure changes in the future (e.g., if a `div` is changed to a `form`).
+**Action:** Ensure all non-submit buttons have `type="button"` by default.

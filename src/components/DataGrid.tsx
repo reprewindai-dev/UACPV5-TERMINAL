@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { VeklomRun } from '../types';
-import { Search, Info, ShieldAlert, CheckCircle2, Shield, AlertTriangle, FileSpreadsheet, Lock } from 'lucide-react';
+import { Search, Info, ShieldAlert, CheckCircle2, Shield, AlertTriangle, FileSpreadsheet, Lock, X } from 'lucide-react';
 
 interface DataGridProps {
   runs: VeklomRun[];
@@ -101,6 +101,16 @@ export default function DataGrid({ runs }: DataGridProps) {
               onChange={(e) => setSearch(e.target.value)}
               className="bg-transparent border-none text-white focus:outline-none placeholder-white/20 font-mono text-xs w-48"
             />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                aria-label="Clear search"
+                className="text-white/40 hover:text-white focus-visible:ring-1 focus-visible:ring-white/50 focus-visible:outline-none rounded-sm transition-colors cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
