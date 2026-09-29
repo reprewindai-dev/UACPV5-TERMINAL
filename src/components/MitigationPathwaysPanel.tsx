@@ -49,7 +49,7 @@ export const MitigationPathwaysPanel: React.FC = () => {
 
       <div className="flex flex-wrap gap-2">
         {pathways.map((p) => (
-          <button
+          <button type="button"
             key={p.id}
             onClick={() => setActiveTab(p.id)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all text-[10px] font-mono uppercase tracking-widest ${

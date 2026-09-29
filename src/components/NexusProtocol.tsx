@@ -223,19 +223,19 @@ export default function NexusProtocol() {
       {/* Sub-Header Tabs */}
       <div className="h-12 border-b border-white/10 shrink-0 bg-void-black/80 backdrop-blur flex items-center justify-between px-6 z-10 select-none">
         <div className="flex gap-4">
-          <button 
+          <button type="button"
             onClick={() => setSubTab('trust')}
             className={`text-xs font-bold tracking-widest uppercase cursor-pointer border-b-2 py-3 px-1 transition-all ${subTab === 'trust' ? 'text-[#00E5FF] border-[#00E5FF]' : 'text-white/40 border-transparent hover:text-white/70'}`}
           >
             TRUST MATRIX
           </button>
-          <button 
+          <button type="button"
             onClick={() => setSubTab('topology')}
             className={`text-xs font-bold tracking-widest uppercase cursor-pointer border-b-2 py-3 px-1 transition-all ${subTab === 'topology' ? 'text-[#00E5FF] border-[#00E5FF]' : 'text-white/40 border-transparent hover:text-white/70'}`}
           >
             PROBE TOPOLOGY
           </button>
-          <button 
+          <button type="button"
             onClick={() => setSubTab('docs')}
             className={`text-xs font-bold tracking-widest uppercase cursor-pointer border-b-2 py-3 px-1 transition-all ${subTab === 'docs' ? 'text-[#00E5FF] border-[#00E5FF]' : 'text-white/40 border-transparent hover:text-white/70'}`}
           >
@@ -266,7 +266,7 @@ export default function NexusProtocol() {
               <div className="text-[10px] font-mono tracking-wider text-white/30 uppercase">TARGET API RECONCILIATION</div>
               <div className="flex flex-col gap-2">
                 {apiCards.map(api => (
-                  <button
+                  <button type="button"
                     key={api.id}
                     onClick={() => setSelectedApiId(api.id)}
                     className={`p-4 rounded-lg text-left transition-all border obsidian-glass-interactive cursor-pointer ${selectedApiId === api.id ? 'border-[#00E5FF]/40 bg-[#00E5FF]/5 shadow-[0_0_15px_rgba(0,229,255,0.05)]' : 'border-white/5 bg-void-metal/40'}`}
@@ -483,7 +483,7 @@ export default function NexusProtocol() {
             <div className="lg:col-span-1 flex flex-col gap-3">
               <div className="text-[10px] font-mono tracking-wider text-white/30 uppercase">SPECIFICATION DOCUMENT TABLE</div>
               <div className="flex flex-col gap-2">
-                <button
+                <button type="button"
                   onClick={() => setDocTab('governance')}
                   className={`p-4 rounded-lg text-left transition-all border cursor-pointer flex gap-3 items-center ${docTab === 'governance' ? 'border-[#00E5FF]/40 bg-[#00E5FF]/5' : 'border-white/5 bg-void-metal/40'}`}
                 >
@@ -493,7 +493,7 @@ export default function NexusProtocol() {
                     <div className="text-[9px] text-white/40 font-mono">VNP v1.0 — LOCKED SPEC</div>
                   </div>
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setDocTab('methodology')}
                   className={`p-4 rounded-lg text-left transition-all border cursor-pointer flex gap-3 items-center ${docTab === 'methodology' ? 'border-[#00E5FF]/40 bg-[#00E5FF]/5' : 'border-white/5 bg-void-metal/40'}`}
                 >

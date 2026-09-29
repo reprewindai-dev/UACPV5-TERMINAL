@@ -570,11 +570,11 @@ export default function App() {
         {/* Terminal View */}
         <div className={`view ${activeView === 'terminal' ? 'active' : ''}`} id="v-terminal">
           <div className="chips-bar">
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
           </div>
           
           <div className="output" id="output" ref={outRef}>
@@ -643,7 +643,7 @@ export default function App() {
               aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
             />
-            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
+            <button type="button" className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
           </div>
         </div>
 
@@ -1028,7 +1028,7 @@ export default function App() {
 
       {/* Bottom Nav */}
       <div className="bnav" role="tablist">
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'terminal'}
           className={`bt ${activeView === 'terminal' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1038,7 +1038,7 @@ export default function App() {
             <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
           </svg>Terminal
         </button>
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'mesh'}
           className={`bt ${activeView === 'mesh' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1049,7 +1049,7 @@ export default function App() {
             <line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="5" y2="17"/><line x1="12" y1="12" x2="19" y2="17"/>
           </svg>Mesh
         </button>
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'tele'}
           className={`bt ${activeView === 'tele' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1059,7 +1059,7 @@ export default function App() {
              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>Telemetry
         </button>
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'paths'}
           className={`bt ${activeView === 'paths' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1069,7 +1069,7 @@ export default function App() {
             <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
           </svg>Paths
         </button>
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'engine'}
           className={`bt ${activeView === 'engine' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1079,7 +1079,7 @@ export default function App() {
              <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
           </svg>Engine
         </button>
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'hub'}
           className={`bt ${activeView === 'hub' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1089,7 +1089,7 @@ export default function App() {
              <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
           </svg>Hub
         </button>
-        <button
+        <button type="button"
           role="tab"
           aria-selected={activeView === 'dashboard'}
           className={`bt ${activeView === 'dashboard' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}

@@ -67,7 +67,7 @@ export default function DataGrid({ runs }: DataGridProps) {
       <div className="p-4 border-b border-white/10 bg-black/80 backdrop-blur flex flex-wrap items-center justify-between gap-4 z-10 text-xs shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex bg-[#030303] rounded-none border border-white/15 overflow-hidden">
-            <button
+            <button type="button"
               onClick={() => {
                 setGridTab('runs');
                 setSearch('');
@@ -78,7 +78,7 @@ export default function DataGrid({ runs }: DataGridProps) {
             >
               VeklomRuns Ledger
             </button>
-            <button
+            <button type="button"
               onClick={() => {
                 setGridTab('evidence');
                 setSearch('');
@@ -109,7 +109,7 @@ export default function DataGrid({ runs }: DataGridProps) {
             <span className="text-white/40">POLICY FILTER:</span>
             <div className="flex rounded-none border border-white/10 overflow-hidden text-[10px]">
               {['ALL', 'passed', 'warning', 'violated'].map((st) => (
-                <button
+                <button type="button"
                   key={st}
                   onClick={() => setPolicyFilter(st as any)}
                   className={`px-2.5 py-1 font-bold uppercase transition-colors rounded-none cursor-pointer ${
