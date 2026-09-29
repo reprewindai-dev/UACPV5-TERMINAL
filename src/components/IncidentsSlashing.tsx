@@ -264,7 +264,7 @@ export default function IncidentsSlashing() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <button
+                <button type="button"
                   onClick={() => triggerSimulation('latency')}
                   className="w-full p-3 bg-black/40 border border-white/5 hover:border-[#FF003C]/30 hover:bg-[#FF003C]/5 text-left text-xs font-mono rounded-lg cursor-pointer flex justify-between items-center transition-all group"
                 >
@@ -275,7 +275,7 @@ export default function IncidentsSlashing() {
                   <Play className="w-3.5 h-3.5 text-white/30 group-hover:text-[#FF003C] transition-colors" />
                 </button>
 
-                <button
+                <button type="button"
                   onClick={() => triggerSimulation('outage')}
                   className="w-full p-3 bg-black/40 border border-white/5 hover:border-[#FF003C]/30 hover:bg-[#FF003C]/5 text-left text-xs font-mono rounded-lg cursor-pointer flex justify-between items-center transition-all group"
                 >
@@ -286,7 +286,7 @@ export default function IncidentsSlashing() {
                   <Play className="w-3.5 h-3.5 text-white/30 group-hover:text-[#FF003C] transition-colors" />
                 </button>
 
-                <button
+                <button type="button"
                   onClick={() => triggerSimulation('signature')}
                   className="w-full p-3 bg-black/40 border border-white/5 hover:border-[#FF003C]/30 hover:bg-[#FF003C]/5 text-left text-xs font-mono rounded-lg cursor-pointer flex justify-between items-center transition-all group"
                 >

@@ -238,7 +238,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             <span className="text-white/40">CLUSTER:</span>
             <div className="flex rounded-none border border-white/15 overflow-hidden">
               {['ALL', 'Engineering', 'Ops', 'Research', 'Revenue', 'Growth'].map((dept) => (
-                <button
+                <button type="button"
                   key={dept}
                   onClick={() => setSelectedDept(dept)}
                   className={`px-2 py-0.5 text-[10px] uppercase font-bold transition-colors rounded-none ${selectedDept === dept ? 'bg-electric-cyan text-void-black' : 'bg-[#0A0A0C] text-white/60 hover:text-white hover:bg-white/5'}`}
@@ -268,7 +268,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
 
           {/* Map utilities */}
           <div className="flex items-center gap-1">
-            <button
+            <button type="button"
               onClick={() => setZoom(z => Math.min(2.5, z * 1.15))}
               className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
               title="Zoom In"
@@ -276,7 +276,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button type="button"
               onClick={() => setZoom(z => Math.max(0.4, z / 1.15))}
               className="p-1 px-2.5 rounded-none border border-white/15 bg-[#030303] text-white/60 hover:text-white"
               title="Zoom Out"
@@ -284,7 +284,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button type="button"
               onClick={() => {
                 setZoom(1.0);
                 centerMap();
@@ -295,7 +295,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button type="button"
               onClick={() => setIsDiagnosticsOpen(prev => !prev)}
               className={`p-1 px-2.5 rounded-none border text-[10px] font-mono tracking-wider font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 isDiagnosticsOpen 
@@ -507,7 +507,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                     {selectedAgent.name}
                   </div>
                 </div>
-                <button
+                <button type="button"
                   onClick={() => setSelectedAgentId(null)}
                   className="p-1 px-2 rounded-none hover:bg-white/5 text-white/50 hover:text-white border border-transparent hover:border-white/10"
                   aria-label="Close agent details"
@@ -608,7 +608,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
 
             {/* Diagnostics footer override triggers */}
             <div className="p-3 bg-[#0A0A0C] border-t border-white/10">
-              <button
+              <button type="button"
                 onClick={() => handleAgentDiagnostics(selectedAgent.id)}
                 disabled={isRefreshing}
                 className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-white/[0.01] hover:bg-white/[0.04] border border-white/10 rounded-none text-white text-[11px] font-bold font-mono uppercase tracking-widest disabled:opacity-50 transition-all cursor-pointer"
@@ -647,7 +647,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                     </div>
                   </div>
                 </div>
-                <button
+                <button type="button"
                   onClick={() => setIsDiagnosticsOpen(false)}
                   className="p-1 px-2 rounded-none hover:bg-white/5 text-white/50 hover:text-white border border-transparent hover:border-white/10 cursor-pointer"
                   title="Close diagnostics [Esc]"
@@ -668,7 +668,7 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
                         <span className="w-2 h-2 rounded-full bg-matrix-emerald inline-block absolute" />
                         &nbsp;&nbsp;&nbsp;ACTIVE PAYLOAD BUFFER STREAM
                       </span>
-                      <button
+                      <button type="button"
                         onClick={() => {
                           navigator.clipboard.writeText(formattedJson);
                           setCopiedDiagnostics(true);

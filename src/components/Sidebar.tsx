@@ -61,7 +61,7 @@ export default function Sidebar({ activeTab, setActiveTab, mcpHeartbeat, through
             const IsActive = activeTab === item.id;
             const Icon = item.icon;
             return (
-              <button
+              <button type="button"
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full group relative flex items-center gap-3.5 px-3 py-2.5 rounded-none text-left transition-all duration-300 pointer border border-transparent`}

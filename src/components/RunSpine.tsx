@@ -106,7 +106,7 @@ export default function RunSpine({ runs, selectedRunId, onSelectRun }: RunSpineP
           {runs.map((run) => {
             const isSel = run.id === selectedRun.id;
             return (
-              <button
+              <button type="button"
                 key={run.id}
                 onClick={() => onSelectRun(run.id)}
                 className={`w-full p-3.5 text-left transition-all duration-200 block border-l-2 relative cursor-pointer ${
@@ -152,7 +152,7 @@ export default function RunSpine({ runs, selectedRunId, onSelectRun }: RunSpineP
               }`}>
                 {selectedRun.id} <span className="text-white/40 font-normal">• PGL CONVENIENCE TRAIL</span>
               </span>
-              <button
+              <button type="button"
                 onClick={() => {
                   navigator.clipboard.writeText(selectedRun.id);
                   setCopiedId(true);
@@ -160,6 +160,7 @@ export default function RunSpine({ runs, selectedRunId, onSelectRun }: RunSpineP
                 }}
                 className="opacity-0 group-hover/id:opacity-100 transition-opacity duration-200 bg-white/5 hover:bg-white/10 border border-white/10 px-1.5 py-0.5 text-[8px] tracking-widest text-white/80 uppercase font-mono cursor-pointer flex items-center gap-1 select-none"
                 title="Copy Run ID"
+                aria-label="Copy Run ID"
               >
                 <Copy className="w-2.5 h-2.5" />
                 Copy ID

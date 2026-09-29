@@ -70,7 +70,7 @@ export const IntentConsole: React.FC<IntentConsoleProps> = ({
                 <span className="text-[8px] font-mono text-white/20 uppercase">Model Routing</span>
                 <span className="text-[9px] font-mono text-cyan-400/50 font-bold uppercase tracking-widest">{selectedProvider}</span>
              </div>
-            <button 
+            <button type="button"
                 disabled={isLocked}
                 onClick={handleDispatch}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs uppercase font-bold transition-all focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none ${
