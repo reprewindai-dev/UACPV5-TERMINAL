@@ -11,3 +11,7 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2025-03-01 - Sidebar Accessibility\n**Learning:** Implementing  states combined with  on global navigation elements creates a much clearer mental model for keyboard users navigating tabbed layouts, and  in PascalCase shouldn't trigger alarm if it's already defined.\n**Action:** Use  for active tab states alongside high-contrast focus rings in future navigation enhancements.
+## 2025-03-01 - Sidebar Accessibility
+**Learning:** Implementing `focus-visible` states combined with `aria-current="page"` on global navigation elements creates a much clearer mental model for keyboard users navigating tabbed layouts.
+**Action:** Use `aria-current="page"` for active tab states alongside high-contrast focus rings in future navigation enhancements.
