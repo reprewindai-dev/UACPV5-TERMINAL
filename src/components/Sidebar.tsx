@@ -63,8 +63,10 @@ export default function Sidebar({ activeTab, setActiveTab, mcpHeartbeat, through
             return (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full group relative flex items-center gap-3.5 px-3 py-2.5 rounded-none text-left transition-all duration-300 pointer border border-transparent`}
+                aria-current={IsActive ? 'page' : undefined}
+                className={`w-full group relative flex items-center gap-3.5 px-3 py-2.5 rounded-none text-left transition-all duration-300 pointer border border-transparent focus-visible:outline-none focus-visible:bg-white/[0.05] focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-electric-cyan`}
                 style={{ contentVisibility: 'auto' }}
               >
                 {/* Framer motion background block */}
