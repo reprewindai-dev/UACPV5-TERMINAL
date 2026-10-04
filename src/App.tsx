@@ -570,11 +570,11 @@ export default function App() {
         {/* Terminal View */}
         <div className={`view ${activeView === 'terminal' ? 'active' : ''}`} id="v-terminal">
           <div className="chips-bar">
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
+            <button disabled={isTyping} className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
+            <button disabled={isTyping} className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
+            <button disabled={isTyping} className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
+            <button disabled={isTyping} className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
+            <button disabled={isTyping} className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
           </div>
           
           <div className="output" id="output" ref={outRef}>
@@ -638,12 +638,13 @@ export default function App() {
           <div className="input-bar">
             <label htmlFor="cmd" className="i-pmt">$</label>
             <input 
-              className="i-field" id="cmd" type="text" placeholder="Enter command…"
+              disabled={isTyping}
+              className="i-field disabled:opacity-50 disabled:cursor-not-allowed" id="cmd" type="text" placeholder="Enter command…"
               value={inputVal} onChange={e => setInputVal(e.target.value)} onKeyDown={handleKeyDown}
               aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
             />
-            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
+            <button disabled={isTyping} className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={submitCmd}>RUN</button>
           </div>
         </div>
 
