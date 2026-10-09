@@ -11,3 +11,7 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+
+## 2024-03-24 - DataGrid Accessibility Enhancement
+**Learning:** Tab selectors and custom input filters within data grids often lack proper ARIA roles (e.g., `role="tablist"`, `role="tab"`) and keyboard focus states, making them difficult for screen reader and keyboard-only users to navigate.
+**Action:** Add `role="tablist"` to tab containers, `role="tab"` and `aria-selected` to individual tabs, ensure all interactive buttons have `type="button"` to prevent form submission, and include clear `focus-visible` utility classes for keyboard navigation.
