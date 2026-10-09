@@ -66,24 +66,30 @@ export default function DataGrid({ runs }: DataGridProps) {
       {/* Search and Tab selectors */}
       <div className="p-4 border-b border-white/10 bg-black/80 backdrop-blur flex flex-wrap items-center justify-between gap-4 z-10 text-xs shrink-0">
         <div className="flex items-center gap-3">
-          <div className="flex bg-[#030303] rounded-none border border-white/15 overflow-hidden">
+          <div className="flex bg-[#030303] rounded-none border border-white/15 overflow-hidden" role="tablist">
             <button
+              type="button"
+              role="tab"
+              aria-selected={gridTab === 'runs'}
               onClick={() => {
                 setGridTab('runs');
                 setSearch('');
               }}
-              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer ${
+              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none z-10 ${
                 gridTab === 'runs' ? 'bg-electric-cyan text-void-black font-extrabold' : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
               VeklomRuns Ledger
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={gridTab === 'evidence'}
               onClick={() => {
                 setGridTab('evidence');
                 setSearch('');
               }}
-              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer ${
+              className={`px-3 py-1.5 text-[11px] font-bold uppercase transition-all duration-200 rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none z-10 ${
                 gridTab === 'evidence' ? 'bg-electric-cyan text-void-black font-extrabold' : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -99,7 +105,7 @@ export default function DataGrid({ runs }: DataGridProps) {
               placeholder={gridTab === 'runs' ? "Search execution runs..." : "Query evidence registry..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none text-white focus:outline-none placeholder-white/20 font-mono text-xs w-48"
+              className="bg-transparent border-none text-white focus:outline-none placeholder-white/20 font-mono text-xs w-48 focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none z-10"
             />
           </div>
         </div>
@@ -110,9 +116,10 @@ export default function DataGrid({ runs }: DataGridProps) {
             <div className="flex rounded-none border border-white/10 overflow-hidden text-[10px]">
               {['ALL', 'passed', 'warning', 'violated'].map((st) => (
                 <button
+                  type="button"
                   key={st}
                   onClick={() => setPolicyFilter(st as any)}
-                  className={`px-2.5 py-1 font-bold uppercase transition-colors rounded-none cursor-pointer ${
+                  className={`px-2.5 py-1 font-bold uppercase transition-colors rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none z-10 ${
                     policyFilter === st ? 'bg-white/10 text-white font-extrabold' : 'bg-transparent text-white/50 hover:text-white hover:bg-white/5'
                   }`}
                 >
