@@ -11,3 +11,6 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2024-05-24 - Interactive Element A11y and Type Declarations
+**Learning:** Reusable navigation elements like sidebar buttons must explicitly declare `type="button"` to avoid unintended form submission bugs in complex nested UI structures, and must provide clear keyboard focus indicators (`focus-visible:ring`) to remain usable for keyboard-only navigation in dense technical interfaces.
+**Action:** When auditing or implementing sidebar or toolbar navigation patterns, ensure every interactive `<button>` uses `type="button"` by default and includes distinct `focus-visible` styling (e.g., `focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-electric-cyan focus-visible:bg-white/5`) to maintain accessibility across complex views.
