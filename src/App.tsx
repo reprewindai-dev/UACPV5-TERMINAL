@@ -535,7 +535,7 @@ export default function App() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') submitCmd();
+    if (e.key === 'Enter' && inputVal.trim() && !isTyping) submitCmd();
   };
 
   const fillPrompt = (t: string) => {
@@ -643,7 +643,7 @@ export default function App() {
               aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
             />
-            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={submitCmd}>RUN</button>
+            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={submitCmd} disabled={!inputVal.trim() || isTyping}>{isTyping ? "..." : "RUN"}</button>
           </div>
         </div>
 
