@@ -58,7 +58,7 @@ canvas#zeno{width:100%;height:26px;display:block}
 .z-state{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);flex-shrink:0;transition:all .2s;text-shadow:0 0 5px var(--green)}
 .z-state.on{color:var(--amber);text-shadow:0 0 8px var(--amber)}
 .bnav{display:flex;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:var(--safe-b)}
-.bt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-f);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s;user-select:none;min-height:50px}
+.bt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-f);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s;user-select:none;min-height:50px;background:transparent;border:none}
 .bt svg{width:16px;height:16px}
 .bt.active{color:var(--accent)}
 .bt:active{color:var(--accent)}
