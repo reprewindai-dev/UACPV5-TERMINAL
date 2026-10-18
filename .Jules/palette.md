@@ -14,3 +14,14 @@
 ## 2024-05-18 - Always specify button types
 **Learning:** Always explicitly include `type="button"` on `<button>` elements that are not part of a form, especially when adding new UI actions like "clear search". This prevents unintended form submissions if the surrounding DOM structure changes in the future (e.g., if a `div` is changed to a `form`).
 **Action:** Ensure all non-submit buttons have `type="button"` by default.
+
+## 2024-03-24 - DataGrid Accessibility Enhancement
+**Learning:** Tab selectors and custom input filters within data grids often lack proper ARIA roles (e.g., `role="tablist"`, `role="tab"`) and keyboard focus states, making them difficult for screen reader and keyboard-only users to navigate.
+**Action:** Add `role="tablist"` to tab containers, `role="tab"` and `aria-selected` to individual tabs, ensure all interactive buttons have `type="button"` to prevent form submission, and include clear `focus-visible` utility classes for keyboard navigation.
+## 2025-03-01 - Sidebar Accessibility\n**Learning:** Implementing  states combined with  on global navigation elements creates a much clearer mental model for keyboard users navigating tabbed layouts, and  in PascalCase shouldn't trigger alarm if it's already defined.\n**Action:** Use  for active tab states alongside high-contrast focus rings in future navigation enhancements.
+## 2025-03-01 - Sidebar Accessibility
+**Learning:** Implementing `focus-visible` states combined with `aria-current="page"` on global navigation elements creates a much clearer mental model for keyboard users navigating tabbed layouts.
+**Action:** Use `aria-current="page"` for active tab states alongside high-contrast focus rings in future navigation enhancements.
+## 2024-03-08 - Prevent Actionable Submissions on Empty Inputs
+**Learning:** Found that the terminal interface allowed submitting empty commands or attempting to submit commands while the system was already processing ("typing"). This lack of state-based disabling creates confusing UX as it processes invalid inputs and doesn't visually communicate the busy state.
+**Action:** Use conditional `disabled` states tied to both input validation (e.g., `!inputVal.trim()`) and processing states (e.g., `isTyping`). Apply `disabled:opacity-50 disabled:cursor-not-allowed` styles and update keyboard event handlers to enforce these same constraints before submitting.
