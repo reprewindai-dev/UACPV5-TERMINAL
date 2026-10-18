@@ -11,6 +11,10 @@
 ## 2025-02-21 - Focus-visible styling requires real keyboard emulation
 **Learning:** When using Playwright to verify focus-visible classes on elements, programmatic `.focus()` calls might not reliably trigger the styles. True keyboard emulation using sequential `page.keyboard.press("Tab")` events is often necessary to correctly simulate and capture keyboard focus states.
 **Action:** When testing keyboard accessibility styles, prefer simulating tab navigation from a known starting point rather than using direct JavaScript/Playwright `.focus()` methods.
+## 2025-03-01 - Sidebar Accessibility\n**Learning:** Implementing  states combined with  on global navigation elements creates a much clearer mental model for keyboard users navigating tabbed layouts, and  in PascalCase shouldn't trigger alarm if it's already defined.\n**Action:** Use  for active tab states alongside high-contrast focus rings in future navigation enhancements.
+## 2025-03-01 - Sidebar Accessibility
+**Learning:** Implementing `focus-visible` states combined with `aria-current="page"` on global navigation elements creates a much clearer mental model for keyboard users navigating tabbed layouts.
+**Action:** Use `aria-current="page"` for active tab states alongside high-contrast focus rings in future navigation enhancements.
 ## 2024-03-08 - Prevent Actionable Submissions on Empty Inputs
 **Learning:** Found that the terminal interface allowed submitting empty commands or attempting to submit commands while the system was already processing ("typing"). This lack of state-based disabling creates confusing UX as it processes invalid inputs and doesn't visually communicate the busy state.
 **Action:** Use conditional `disabled` states tied to both input validation (e.g., `!inputVal.trim()`) and processing states (e.g., `isTyping`). Apply `disabled:opacity-50 disabled:cursor-not-allowed` styles and update keyboard event handlers to enforce these same constraints before submitting.
