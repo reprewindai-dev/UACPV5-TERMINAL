@@ -232,6 +232,16 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-transparent border-none text-white/95 placeholder-white/35 font-mono text-xs w-48 focus:outline-none"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                aria-label="Clear search"
+                className="text-white/40 hover:text-white focus-visible:ring-1 focus-visible:ring-white/50 focus-visible:outline-none rounded-sm transition-colors cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-1.5">
