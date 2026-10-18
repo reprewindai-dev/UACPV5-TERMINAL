@@ -252,9 +252,9 @@ export default function SwarmMap({ agents, onAgentUpdate }: SwarmMapProps) {
 
         <div className="flex items-center gap-3.5">
           <div className="flex items-center gap-1.5">
-            <label htmlFor="state-filter" className="text-white/40">STATE:</label>
+            <span className="text-white/40">STATE:</span>
             <select
-              id="state-filter"
+              aria-label="Filter by state"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="bg-[#030303] border border-white/15 text-white/80 rounded-none px-2 py-0.5 text-[11px] focus:outline-none"
