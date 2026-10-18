@@ -3,13 +3,23 @@ import fs from "node:fs";
 import { resolveRuntimePort } from "./runtime-port.mjs";
 
 assert.equal(resolveRuntimePort(undefined, "development"), 80);
+assert.equal(resolveRuntimePort("", "development"), 80);
 assert.equal(resolveRuntimePort("80", "production"), 80);
+assert.equal(resolveRuntimePort(" 80 ", "production"), 80);
 assert.equal(resolveRuntimePort("8080", "development"), 8080);
 
 for (const forbidden of ["3000", "8000"]) {
   assert.throws(
     () => resolveRuntimePort(forbidden, "development"),
     /forbidden for canonical Terminal/,
+  );
+}
+
+for (const malformed of ["80junk", "80.5", "80 extra", "3000junk", "8000junk", "+80", "-80"]) {
+  assert.throws(
+    () => resolveRuntimePort(malformed, "development"),
+    /PORT must be an integer/,
+    `malformed PORT ${JSON.stringify(malformed)} must be rejected as a whole string`,
   );
 }
 
