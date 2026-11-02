@@ -36,3 +36,6 @@
 ## 2024-03-08 - Prevent Actionable Submissions on Empty Inputs
 **Learning:** Found that the terminal interface allowed submitting empty commands or attempting to submit commands while the system was already processing ("typing"). This lack of state-based disabling creates confusing UX as it processes invalid inputs and doesn't visually communicate the busy state.
 **Action:** Use conditional `disabled` states tied to both input validation (e.g., `!inputVal.trim()`) and processing states (e.g., `isTyping`). Apply `disabled:opacity-50 disabled:cursor-not-allowed` styles and update keyboard event handlers to enforce these same constraints before submitting.
+## 2025-03-02 - Ensure Segmented Controls Implement Proper Tab Roles
+**Learning:** Found custom segmented controls acting as filters lacking proper ARIA roles for tab lists. Screen reader users would just see a group of buttons without context that they act as a mutually exclusive tab selection.
+**Action:** When creating or updating custom tab components or segmented controls, ensure they implement proper ARIA roles. The container must have `role="tablist"` and an appropriate `aria-label`, and the individual interactive elements must use `role="tab"` and dynamically set `aria-selected` based on state.

@@ -123,10 +123,12 @@ export default function DataGrid({ runs }: DataGridProps) {
         {gridTab === 'runs' && (
           <div className="flex items-center gap-2">
             <span className="text-white/40">POLICY FILTER:</span>
-            <div className="flex rounded-none border border-white/10 overflow-hidden text-[10px]">
+            <div className="flex rounded-none border border-white/10 overflow-hidden text-[10px]" role="tablist" aria-label="Policy filters">
               {['ALL', 'passed', 'warning', 'violated'].map((st) => (
                 <button
                   type="button"
+                  role="tab"
+                  aria-selected={policyFilter === st}
                   key={st}
                   onClick={() => setPolicyFilter(st as any)}
                   className={`px-2.5 py-1 font-bold uppercase transition-colors rounded-none cursor-pointer focus-visible:ring-2 focus-visible:ring-electric-cyan focus-visible:outline-none z-10 ${
