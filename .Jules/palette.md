@@ -36,3 +36,6 @@
 ## 2024-03-08 - Prevent Actionable Submissions on Empty Inputs
 **Learning:** Found that the terminal interface allowed submitting empty commands or attempting to submit commands while the system was already processing ("typing"). This lack of state-based disabling creates confusing UX as it processes invalid inputs and doesn't visually communicate the busy state.
 **Action:** Use conditional `disabled` states tied to both input validation (e.g., `!inputVal.trim()`) and processing states (e.g., `isTyping`). Apply `disabled:opacity-50 disabled:cursor-not-allowed` styles and update keyboard event handlers to enforce these same constraints before submitting.
+## 2024-03-24 - DataGrid Accessibility Enhancement
+**Learning:** Tab selectors and custom input filters within data grids often lack proper ARIA roles (e.g., `role="tablist"`, `role="tab"`) and keyboard focus states, making them difficult for screen reader and keyboard-only users to navigate.
+**Action:** Add `role="tablist"` to tab containers, `role="tab"` and `aria-selected` to individual tabs, ensure all interactive buttons have `type="button"` to prevent form submission, and include clear `focus-visible` utility classes for keyboard navigation.
