@@ -36,3 +36,6 @@
 ## 2024-03-08 - Prevent Actionable Submissions on Empty Inputs
 **Learning:** Found that the terminal interface allowed submitting empty commands or attempting to submit commands while the system was already processing ("typing"). This lack of state-based disabling creates confusing UX as it processes invalid inputs and doesn't visually communicate the busy state.
 **Action:** Use conditional `disabled` states tied to both input validation (e.g., `!inputVal.trim()`) and processing states (e.g., `isTyping`). Apply `disabled:opacity-50 disabled:cursor-not-allowed` styles and update keyboard event handlers to enforce these same constraints before submitting.
+## 2026-11-06 - Added ARIA attributes to Segmented Control
+**Learning:** Using `role="tablist"` and `role="tab"` with `aria-selected` is an effective pattern for improving the accessibility of custom segmented controls used for filtering, ensuring screen readers can announce the active selection state correctly.
+**Action:** When implementing or updating segmented controls in React applications, ensure they are wrapped in a container with `role="tablist"` and the individual buttons have `role="tab"` and `aria-selected` tied to their active state.
