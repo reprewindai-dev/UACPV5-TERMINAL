@@ -36,3 +36,6 @@
 ## 2024-03-08 - Prevent Actionable Submissions on Empty Inputs
 **Learning:** Found that the terminal interface allowed submitting empty commands or attempting to submit commands while the system was already processing ("typing"). This lack of state-based disabling creates confusing UX as it processes invalid inputs and doesn't visually communicate the busy state.
 **Action:** Use conditional `disabled` states tied to both input validation (e.g., `!inputVal.trim()`) and processing states (e.g., `isTyping`). Apply `disabled:opacity-50 disabled:cursor-not-allowed` styles and update keyboard event handlers to enforce these same constraints before submitting.
+## 2024-03-08 - Adding dynamic titles to complex button states
+**Learning:** Buttons with complex `disabled` states (like a run button that can be disabled due to an empty input or an active processing state) can benefit greatly from a dynamic `title` tooltip explaining the state. It provides clear, immediate feedback without cluttering the UI.
+**Action:** When working with buttons that have multi-conditional `disabled` states, add a `title` attribute that dynamically changes based on the condition (e.g., "Processing...", "Enter input first") to improve user understanding.
