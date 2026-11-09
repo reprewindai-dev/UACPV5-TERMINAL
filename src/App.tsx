@@ -570,11 +570,11 @@ export default function App() {
         {/* Terminal View */}
         <div className={`view ${activeView === 'terminal' ? 'active' : ''}`} id="v-terminal">
           <div className="chips-bar">
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
-            <button className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Optimize a 10,000-bit monochrome bitmap transmission')}>📡 Bitmap tx</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Calibrate a thousand-qubit Heron processor')}>⚛️ Heron QPU</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Synthesize MCP orchestration plan for CO2 Router')}>🌿 CO2 Router</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Run Zeno interrogation on filesystem_srv')}>🔬 Zeno scan</button>
+            <button type="button" className="chip focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none" onClick={() => fillPrompt('Show MCP mesh topology')}>🕸️ MCP mesh</button>
           </div>
           
           <div className="output" id="output" ref={outRef}>
@@ -643,7 +643,7 @@ export default function App() {
               aria-label="Terminal command input"
               autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" enterKeyHint="send"
             />
-            <button className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={submitCmd} disabled={!inputVal.trim() || isTyping}>{isTyping ? "..." : "RUN"}</button>
+            <button type="button" className="run-btn focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed" onClick={submitCmd} disabled={!inputVal.trim() || isTyping}>{isTyping ? "..." : "RUN"}</button>
           </div>
         </div>
 
@@ -1029,6 +1029,7 @@ export default function App() {
       {/* Bottom Nav */}
       <div className="bnav" role="tablist">
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'terminal'}
           className={`bt ${activeView === 'terminal' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1039,6 +1040,7 @@ export default function App() {
           </svg>Terminal
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'mesh'}
           className={`bt ${activeView === 'mesh' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1050,6 +1052,7 @@ export default function App() {
           </svg>Mesh
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'tele'}
           className={`bt ${activeView === 'tele' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1060,6 +1063,7 @@ export default function App() {
           </svg>Telemetry
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'paths'}
           className={`bt ${activeView === 'paths' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1070,6 +1074,7 @@ export default function App() {
           </svg>Paths
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'engine'}
           className={`bt ${activeView === 'engine' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1080,6 +1085,7 @@ export default function App() {
           </svg>Engine
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'hub'}
           className={`bt ${activeView === 'hub' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
@@ -1090,6 +1096,7 @@ export default function App() {
           </svg>Hub
         </button>
         <button
+          type="button"
           role="tab"
           aria-selected={activeView === 'dashboard'}
           className={`bt ${activeView === 'dashboard' ? 'active' : ''} focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none`}
